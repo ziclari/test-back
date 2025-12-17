@@ -1,0 +1,13 @@
+meta:
+  id: "default_test"
+  name: "Default Test Simulator"
+  version: "1.0"
+  description: "A simple test simulator demonstrating core engine features in a single YAML file."
+  requireLogin: false
+  startScene: "test"
+  skin: "src/default.css"
+  themeColor: "#3b82f6"
+
+scenes:
+  - id: test
+    file: test-simulator.yaml

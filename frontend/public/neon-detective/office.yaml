@@ -1,0 +1,39 @@
+scene:
+  background: bg_office
+  slides:
+    - id: office_1
+      elements:
+        - type: text
+          content: |
+            DETECTIVE'S OFFICE
+            02:00 AM
+          top: 50
+          left: 50
+          width: 500
+          className: heading-text
+        - type: text
+          content: |
+            You are at your desk. The holographic display shows two possible locations for the suspect.
+            Where do you want to go?
+          top: 200
+          left: 500
+          width: 900
+          className: bubble
+        - type: button
+          text: Investigate Rainy Street
+          top: 600
+          left: 400
+          variant: primary
+          action:
+            - goto_scene:street
+        - type: button
+          text: Check The Neon Club
+          top: 600
+          right: 400
+          variant: primary
+          action:
+            - goto_scene:club
+  assets:
+    images:
+      bg_office:
+        src: https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop

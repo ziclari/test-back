@@ -1,0 +1,50 @@
+scene:
+  background: bg_club
+  slides:
+    - id: club_1
+      elements:
+        - type: text
+          content: |
+            THE NEON CLUB
+            Underground Level
+          top: 50
+          left: 50
+          width: 500
+          className: heading-text
+        - type: text
+          content: |
+            The music is loud. You spot someone matching the suspect's description in the VIP area.
+            They see you and start running!
+          top: 200
+          left: 500
+          width: 900
+          className: bubble
+        - type: button
+          text: CHASE THEM!
+          top: 600
+          left: 830
+          variant: primary
+          action:
+            - next_slide
+    - id: club_2
+      elements:
+        - type: text
+          content: |
+            CASE CLOSED?
+            You corner the suspect in the alleyway.
+            To be continued...
+          top: 300
+          left: 500
+          width: 900
+          className: bubble
+        - type: button
+          text: Back to Main Menu
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_scene:intro
+  assets:
+    images:
+      bg_club:
+        src: https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=2070&auto=format&fit=crop

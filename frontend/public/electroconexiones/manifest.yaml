@@ -1,0 +1,33 @@
+meta:
+  id: "electro_conexiones"
+  name: "Electro conexiones del Bajío"
+  version: "1.0"
+  description: "Simulador interactivo con fases progresivas."
+  requireLogin: true
+  startScene: "intro"
+  skin: "src/output.css"
+  icon: "src/assets/icon-192x192.png"
+  favicon: "src/assets/favicon.ico"
+  themeColor: "#1B1B1B"
+
+scenes:
+  - id: intro
+    file: intro.yaml
+    requires: []
+    skipIf: ["user_has_any_phase_progress"]
+    next: "menu"
+
+  - id: menu
+    file: menu.yaml
+
+  - id: fase1
+    file: fase1.yaml
+
+  - id: fase2
+    file: fase2.yaml
+
+  - id: fase3
+    file: fase3.yaml
+
+  - id: fase4
+    file: fase4.yaml

@@ -1,0 +1,113 @@
+scene:
+  background: background_2
+  slides:
+    - id: menu
+      background: background_1
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  zIndex: 10
+                  delay: 0.5
+                  className: base__logo
+        - type: group
+          top: 300
+          left: 150
+          className: menu
+          animate: none
+          elements:
+            - type: card
+              animate:
+                - slideDown
+              id: fase1
+              position: relative
+              img: card_menu_1
+              title: Fase 1.
+              content: Selección de mercado y propuesta mercadológica
+              requires: []
+              action:
+                - play_sound:next
+                - goto_scene:fase1
+            - type: card
+              id: fase2
+              animate: slideDown
+              delay: 0.2
+              position: relative
+              img: card_menu_2
+              title: Fase 2.
+              content: Análisis de viabilidad de mercado
+              requires:
+                - TAREA_APP_1
+                - TAREA_APP_2
+              action:
+                - play_sound:next
+                - goto_scene:fase2
+            - type: card
+              id: fase3
+              animate: slideDown
+              delay: 0.6
+              position: relative
+              img: card_menu_3
+              title: Fase 3.
+              content: Propuesta de penetración
+              requires:
+                - TAREA_APP_3
+                - TAREA_APP_4
+                - TAREA_APP_5
+              action:
+                - play_sound:next
+                - goto_scene:fase3
+            - type: card
+              id: fase4
+              animate: slideDown
+              delay: 0.8
+              position: relative
+              img: card_menu_4
+              title: Fase 4.
+              content: Presentación de la propuesta
+              requires:
+                - fase3_done
+              action:
+                - play_sound:next
+                - goto_scene:fase4
+  assets:
+    images:
+      background_1:
+        src: src/background/background1.jpeg
+      background_2:
+        src: src/background/background2.jpeg
+      card_menu_1:
+        src: src/menu/primera_activa.png
+      card_menu_2:
+        src: src/menu/segunda_activa.png
+      card_menu_3:
+        src: src/menu/tercera_activa.png
+      card_menu_4:
+        src: src/menu/cuarta_activa.png
+      casa:
+        src: src/interactivos/menu.png
+      ebc:
+        src: src/logos/ebc_logo.png
+      electro:
+        src: src/logos/electro.png
+    audios:
+      next:
+        src: src/audios/audio2.mpga

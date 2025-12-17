@@ -1,0 +1,32 @@
+scene:
+  background: bg_street
+  slides:
+    - id: street_1
+      elements:
+        - type: text
+          content: |
+            RAINY STREET
+            Sector 7
+          top: 50
+          left: 50
+          width: 500
+          className: heading-text
+        - type: text
+          content: |
+            You find a discarded data chip in a puddle.
+            It's encrypted, but it might contain the suspect's location.
+          top: 200
+          left: 500
+          width: 900
+          className: bubble
+        - type: button
+          text: Return to Office
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_scene:office
+  assets:
+    images:
+      bg_street:
+        src: https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop

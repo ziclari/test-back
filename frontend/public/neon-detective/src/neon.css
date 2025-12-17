@@ -1,0 +1,61 @@
+/* Neon Detective Theme */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+body {
+    background-color: #050505;
+    color: #0f0;
+    font-family: 'VT323', monospace;
+    overflow: hidden;
+}
+
+.heading-text {
+    font-size: 4rem;
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+.bubble {
+    background: rgba(0, 20, 0, 0.9);
+    border: 2px solid #0f0;
+    box-shadow: 0 0 10px #0f0;
+    color: #0f0;
+    padding: 20px;
+    font-size: 1.5rem;
+    border-radius: 5px;
+}
+
+.button-primary {
+    background: transparent;
+    border: 2px solid #f0f;
+    color: #f0f;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    box-shadow: 0 0 5px #f0f;
+}
+
+.button-primary:hover {
+    background: #f0f;
+    color: #000;
+    box-shadow: 0 0 20px #f0f;
+}
+
+/* Glitch effect for images or specific elements if needed */
+.glitch {
+    position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}

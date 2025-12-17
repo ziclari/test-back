@@ -1,0 +1,11 @@
+- type: group
+  animate: none
+  width: 1920
+  height: 1080
+  elements:
+    - type: image
+      src: ebc
+      top: 0
+      right: 20
+      width: 80
+      height: 80

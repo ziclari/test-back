@@ -1,0 +1,58 @@
+scene:
+  background: bg_office
+  slides:
+    - id: intro_slide
+      elements:
+        - type: text
+          content: |
+            THE ENGLISH HOTEL MYSTERY
+          top: 100
+          left: 100
+          width: 800
+          className: heading-text
+        
+        - type: text
+          content: |
+            A diamond necklace has been stolen from the Grand Hotel.
+            
+            You are the detective assigned to the case.
+            Your English skills are your most powerful weapon.
+            
+            Choose your approach carefully.
+          top: 300
+          left: 100
+          width: 700
+          className: bubble
+          
+        - type: text
+          content: "SELECT YOUR STYLE:"
+          top: 550
+          left: 100
+          className: bubble
+          
+        - type: button
+          text: "The Polite Gentleman"
+          top: 650
+          left: 100
+          variant: primary
+          action:
+            - custom_set:detective_style,polite
+            - custom_set:trust_meter,50
+            - custom_set:clues_found,0
+            - goto_scene:scenes/lobby
+            
+        - type: button
+          text: "The Aggressive Inspector"
+          top: 650
+          left: 500
+          variant: primary
+          action:
+            - custom_set:detective_style,aggressive
+            - custom_set:trust_meter,30
+            - custom_set:clues_found,0
+            - goto_scene:scenes/lobby
+
+  assets:
+    images:
+      bg_office:
+        src: https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop

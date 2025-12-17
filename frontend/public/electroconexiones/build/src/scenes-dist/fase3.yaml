@@ -1,0 +1,278 @@
+scene:
+  background: background_2
+  slides:
+    - id: fase3-1
+      background: background_1
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  delay: 0.5
+                  className: base__logo
+                  zIndex: 10
+        - type: image
+          src: chica
+          delay: 0.8
+          animate: slideRight
+          left: 200
+          top: 50
+          height: 950
+          className: ModoContenido
+        - type: dialog
+          delay: 0.8
+          animate: slideUp
+          title: ¡Hola, consultor!
+          text: "Gracias por estar listo. Ahora iniciamos la Fase 3: Propuesta de Penetración."
+          button:
+            delay: 0.8
+            label: Ver video
+            icon: chica_video
+            action: play_video:fase3_1_video
+            animate:
+              - slideUp
+              - heartbeat
+          top: 200
+          left: 850
+          width: 850
+        - id: btnNext4
+          type: button
+          variant: primary
+          text: Siguiente
+          top: 930
+          right: 120
+          delay: 0.8
+          action:
+            - play_sound:next
+            - next_slide
+          visible: false
+    - id: fase3-2
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  delay: 0.5
+                  className: base__logo
+                  zIndex: 10
+        - type: text
+          top: 150
+          left: 150
+          content: |
+            Tras revisar los datos proporcionados en la videollamada con la Directora de
+            comercialización, el Comité de Estrategia quiere decidir la modalidad de exportación más
+            alineada con nuestra meta.
+
+            Determina qué modalidad de exportación es la más conveniente para la empresa.
+            Justifica tu elección considerando:
+
+            - Nivel de control necesario en el canal industrial. 
+            - Costos asociados.
+            - Impacto en el posicionamiento de marca.
+            - Perfil y expectativas de los compradores industriales.
+          className: InstructionText
+        - type: button
+          variant: primary
+          text: Siguiente
+          top: 930
+          right: 120
+          action:
+            - play_sound:next
+            - next_slide
+    - id: fase3-3
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  delay: 0.5
+                  className: base__logo
+                  zIndex: 10
+        - type: text
+          top: 150
+          left: 150
+          content: |
+            El Comité de Estrategia te pide enviar al Director General un correo corporativo con tu
+            propuesta de un único método de entrada al mercado internacional seleccionado. Tu
+            mensaje debe incluir:
+
+            - Método recomendado.
+            - Justificación basada en el tipo de producto, el perfil del país, destino y las
+              capacidades actuales de la empresa.
+            - Principales riesgos y beneficios de la estrategia propuesta.
+          className: InstructionText
+        - type: button
+          variant: primary
+          text: Siguiente
+          top: 930
+          right: 120
+          action:
+            - play_sound:next
+            - next_slide
+    - id: fase3-4
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  delay: 0.5
+                  className: base__logo
+                  zIndex: 10
+        - type: text
+          top: 150
+          left: 700
+          content: Fin de la Fase 3
+          className: EndScreenTitle
+        - type: text
+          top: 300
+          left: 300
+          content: Han pasado 24 horas desde que entregaste tu propuesta al Director general. La recomendación sobre el método de entrada fue recibida, revisada y enviada directamente al equipo jurídico y comercial para su validación.
+          className: EndScreenText
+        - type: button
+          variant: primary
+          text: Siguiente
+          top: 930
+          right: 120
+          action:
+            - play_sound:next
+            - mark_complete:fase3_done
+  assets:
+    images:
+      background_1:
+        src: src/background/background1.jpeg
+      background_2:
+        src: src/background/background2.jpeg
+      chica:
+        src: src/personajes/chica.png
+      chica_video:
+        src: src/personajes/chica_video.png
+      casa:
+        src: src/interactivos/menu.png
+      ebc:
+        src: src/logos/ebc_logo.png
+      electro:
+        src: src/logos/electro.png
+    videos:
+      fase3_1_video:
+        id: fase3_1_video
+        src: https://drive.google.com/file/d/1gyWVg_IzcTEd-ZKT4IBgTYWMrosBthEw/preview
+    audios:
+      next:
+        src: src/audios/audio2.mpga
+  events:
+    - "on": end:fase3_1_video
+      do: show:btnNext4
+    - "on": success:fase3_done
+      do: goto_scene:menu

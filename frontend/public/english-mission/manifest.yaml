@@ -1,0 +1,23 @@
+meta:
+  id: "english_mission"
+  name: "The English Hotel Mystery"
+  version: "1.0"
+  description: "Solve the case using your detective skills and proper English grammar."
+  requireLogin: false
+  startScene: "intro"
+  skin: "src/mystery.css"
+  icon: "src/assets/icon.png"
+  themeColor: "#1a202c"
+
+scenes:
+  - id: intro
+    file: scenes/intro.yaml
+    next: lobby
+  - id: lobby
+    file: scenes/lobby.yaml
+    next: lounge
+  - id: lounge
+    file: scenes/lounge.yaml
+    next: finale
+  - id: finale
+    file: scenes/finale.yaml

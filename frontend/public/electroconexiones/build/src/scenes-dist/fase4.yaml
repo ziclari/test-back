@@ -1,0 +1,434 @@
+scene:
+  background: background_2
+  slides:
+    - id: fase4-1
+      background: background_1
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  delay: 0.5
+                  className: base__logo
+                  zIndex: 10
+        - type: image
+          delay: 0.8
+          animate: slideRight
+          src: chico
+          top: 100
+          left: 200
+          height: 950
+          className: ModoContenido
+        - type: dialog
+          delay: 0.8
+          animate: slideUp
+          text: |
+            Han pasado varias semanas de trabajo intenso. Desde la segmentación inicial, la investigación de mercados, la elección del país destino, hasta la definición del método de entrada y la estrategia de inversión.
+
+            Ahora, el Comité de Estrategia Internacional se prepara para la última etapa: presentar las propuestas finales de internacionalización.
+          top: 200
+          left: 850
+          width: 850
+        - id: btnNext5
+          delay: 0.8
+          animate: slideUp
+          type: button
+          variant: primary
+          text: Siguiente
+          top: 780
+          right: 250
+          action:
+            - play_sound:next
+            - next_slide
+    - id: fase4-2
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+        - type: image
+          src: monica_perez
+          top: 0
+          left: 150
+          height: 1000
+          width: 1600
+          className: ModoContenido
+        - type: text
+          top: 120
+          left: 680
+          content: |
+            Asunto: Confirmación de presentación ante Alta Dirección
+            Para: [Nombre del Analista]
+            CC: Comité de Estrategia Internacional
+          className: EmailHeader
+        - type: text
+          top: 220
+          left: 680
+          width: 950
+          content: |
+            Buenas tardes, equipo.
+            Les confirmo que la presentación del proyecto de internacionalización ante el Director General se realizará el día 25 a las 15:00 horas, ya registrada en sus calendarios corporativos.
+
+            Para asegurar el máximo impacto de nuestra presentación, les solicito:
+
+            Diseñar una deck breve con datos cuantitativos y visualizaciones de alto nivel que demuestren el impacto financiero y operativo.
+
+            Preparar argumentos sólidos que respalden cada aspecto de la estrategia de penetración. 
+
+            Si precisan apoyo en diseño de visuales, revisión de contenidos o coordinación de salas y equipo audiovisual, notifíquenlo antes del la fecha límite interna para coordinarlo con TI y Comunicación Corporativa.
+
+            Agradezco su compromiso y dedicación para que esta presentación sea un éxito.
+
+            Saludos cordiales,
+          className: BigEmailBodyText
+        - type: text
+          top: 860
+          left: 680
+          width: 950
+          content: |
+            Mónica Pérez
+            Directora de Comercialización
+            Electro Conexiones del Bajío S.A. de C.V.
+            monica.perez@electroconexiones.com | Ext. 123
+          className: EmailSignature
+        - type: text
+          top: 150
+          right: 20
+          content: |
+            Dale click
+            para entrar 
+            al calendario
+          className: CalendarTextInstruction
+        - type: image
+          src: calendario
+          top: 20
+          right: 220
+          zIndex: 30
+          animate:
+            sequence:
+              - slideUp
+              - heartbeat
+            repeat: infinite
+          className: IconoEnvioChat clickable
+          action: next_slide
+    - id: fase4-3
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+        - type: image
+          src: chat_calendario
+          top: 50
+          left: 10
+          height: 900
+          className: ModoContenido
+        - id: modalCalendario
+          type: modal
+          top: 100
+          left: 300
+          animate: none
+          visible: false
+          elements:
+            - type: text
+              position: relative
+              content: Presentación del proyecto de internacionalización
+              className: ModalTitle
+            - type: text
+              position: relative
+              content: Viernes, 25 de Septiembre | 15:00 hrs
+              className: TextoGrupoPrincipal mb-6
+            - type: group
+              position: relative
+              className: flex gap-4 TextoGrupoPrincipal items-center
+              elements:
+                - type: image
+                  position: relative
+                  src: chico_azul
+                  className: w-[100px]
+                - type: text
+                  position: relative
+                  content: LUIS MENDEZ
+            - type: group
+              position: relative
+              className: Perfil
+              elements:
+                - type: text
+                  position: relative
+                  content: <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 48 48"><path fill="currentColor" d="M24 4c-5.523 0-10 4.477-10 10s4.477 10 10 10s10-4.477 10-10S29.523 4 24 4M12.25 28A4.25 4.25 0 0 0 8 32.249V33c0 3.755 1.942 6.567 4.92 8.38C15.85 43.163 19.786 44 24 44s8.15-.837 11.08-2.62C38.058 39.567 40 36.755 40 33v-.751A4.25 4.25 0 0 0 35.75 28z"></svg>
+                  width: 100
+                  height: 100
+                  className: PerfilConsultor
+                - type: text
+                  position: relative
+                  content: CONSULTOR
+            - type: text
+              position: relative
+              content: Deck breve con datos cuantitativos y visualizaciones de alto nivel que demuestren el impacto financiero y operativo.
+              className: ModalBodyText
+        - type: text
+          top: 720
+          right: 750
+          animate:
+            sequence:
+              - slideUp
+              - heartbeat
+            repeat: infinite
+          content: |
+            Presentación
+            15:00 hrs
+          className: CalendarEventBox
+          action: show:modalCalendario
+        - type: button
+          variant: primary
+          text: Siguiente
+          top: 960
+          right: 120
+          action:
+            - play_sound:next
+            - next_slide
+    - id: fase4-4
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  delay: 0.5
+                  className: base__logo
+                  zIndex: 10
+        - type: text
+          top: 100
+          left: 200
+          content: |
+            Graba un video de 3 a 5 minutos, simulando la presentación de la propuesta de intercionalización.
+
+            1. Incluye los siguientes apartados:
+
+            a. Presenta brevemente tu nombre, tu rol y el objetivo del video.
+            b. Resume el país destino seleccionado y los factores clave que sustentan tu elección.
+            c. Expón la modalidad de exportación y el método de entrada, y justifica por qué es la más adecuada para el
+              mercado industrial.
+            d. Describe brevemente la mezcla mercadológica internacional adaptada al cliente B2B.
+            e. Propón la modalidad de inversión que recomendarías para consolidar la expansión en el mediano plazo.
+            f. Cierra con un mensaje de impacto que refuerce por qué ElectroConexiones del Bajío tiene una oportunidad real de
+            éxito en el país seleccionado.
+          className: TextoInformeEjecutivo
+        - type: fileupload
+          id: TAREA_APP_6
+          background: subir_archivo
+          height: 250
+          top: 600
+          left: 580
+          text: Suelta aquí tus documentos o haz click para buscar en tu equipo
+          className: "AreaSubirArchivo "
+          action: upload_file
+        - id: mensaje_exito_6
+          type: text
+          top: 830
+          left: 620
+          content: Documento enviado con éxito
+          className: MensajeExito
+          visible: false
+        - id: mensaje_error_6
+          type: text
+          top: 830
+          left: 620
+          content: No se pudo enviar el documento
+          className: MensajeError
+          visible: false
+        - id: boton_TAREA_APP_6
+          type: button
+          variant: primary
+          text: Siguiente
+          top: 930
+          right: 120
+          action:
+            - play_sound:next
+            - next_slide
+          visible: false
+    - id: fase4-5
+      elements:
+        - type: group
+          animate: none
+          width: 1920
+          height: 1080
+          elements:
+            - type: image
+              src: casa
+              top: 20
+              left: 20
+              width: 65
+              height: 65
+              zIndex: 10
+              className: PunteroClickeable
+              action:
+                - play_sound:next
+                - goto_scene:menu
+            - type: image
+              src: ebc
+              top: 0
+              right: 20
+              width: 80
+              height: 80
+            - type: group
+              className: reveal-border
+              width: 1920
+              height: 80
+              top: 950
+              left: 20
+              elements:
+                - type: image
+                  src: electro
+                  animate: slideRight
+                  delay: 0.5
+                  className: base__logo
+                  zIndex: 10
+        - type: text
+          top: 150
+          left: 700
+          content: Fin de la Fase 4
+          className: EndScreenTitle
+        - type: text
+          top: 300
+          left: 700
+          content: ¡Felicidades consultor!
+          className: EndScreenText
+        - type: button
+          variant: primary
+          text: Siguiente
+          top: 930
+          right: 120
+          action:
+            - play_sound:next
+            - mark_complete:fase4_done
+  assets:
+    images:
+      background_1:
+        src: src/background/background1.jpeg
+      background_2:
+        src: src/background/background2.jpeg
+      chico:
+        src: src/personajes/chico.png
+      subir_archivo:
+        src: src/interactivos/subir_archivo.png
+      calendario:
+        src: src/interactivos/calendario.png
+      monica_perez:
+        src: src/chats/monicaPerez.png
+      chat_calendario:
+        src: src/chats/calendario.png
+      chico_azul:
+        src: src/personajes/chico_azul.png
+      casa:
+        src: src/interactivos/menu.png
+      ebc:
+        src: src/logos/ebc_logo.png
+      electro:
+        src: src/logos/electro.png
+    audios:
+      next:
+        src: audios/audio2.mpga
+  events:
+    - "on": success:upload_file_TAREA_APP_6
+      do:
+        - show:mensaje_exito_6
+        - show:boton_TAREA_APP_6
+        - mark_complete:TAREA_APP_6
+    - "on": error:upload_file_TAREA_APP_6
+      do: show:mensaje_error_6
+    - "on": upload_file_TAREA_APP_6
+      do: hide:mensaje_error_6
+    - "on": success:fase4_done
+      do: goto_scene:menu

@@ -1,0 +1,63 @@
+/* Mystery / Noir Theme */
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+body {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  font-family: 'Playfair Display', serif;
+}
+
+.heading-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 2.5rem;
+  color: #f1c40f;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  border-left: 5px solid #f1c40f;
+}
+
+.bubble {
+  background: #fdfbf7;
+  color: #2c3e50;
+  font-family: 'Courier Prime', monospace;
+  padding: 20px;
+  border-radius: 2px;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+  border: 1px solid #d3d3d3;
+  transform: rotate(-1deg);
+  max-width: 600px;
+}
+
+.button-primary {
+  background: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #f1c40f;
+  font-family: 'Courier Prime', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+
+.button-primary:hover {
+  background: #f1c40f;
+  color: #1a1a1a;
+  transform: scale(1.05);
+}
+
+.suspect-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.clue-item {
+  background: #2c3e50;
+  color: #bdc3c7;
+  padding: 10px;
+  margin: 5px;
+  border-left: 3px solid #e74c3c;
+  font-family: 'Courier Prime', monospace;
+}

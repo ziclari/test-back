@@ -1,0 +1,128 @@
+scene:
+  background: bg_finale
+  slides:
+    - id: finale_start
+      elements:
+        - type: text
+          content: "THE ACCUSATION"
+          top: 50
+          left: 50
+          className: heading-text
+
+        - type: text
+          content: |
+            You have gathered your evidence. 
+            It is time to make your move.
+          top: 200
+          left: 100
+          width: 600
+          className: bubble
+          
+        - type: text
+          id: trust_display
+          content: "Trust Level: {{ custom.trust_meter }}"
+          top: 150
+          right: 50
+          className: clue-item
+
+        # Logic: If clues < 2, you can't solve it well.
+        
+        - type: button
+          text: "Accuse Mr. Black"
+          top: 500
+          left: 100
+          variant: primary
+          action:
+            - goto_id:calculate_result
+
+    - id: calculate_result
+      # This slide is just a router, it immediately redirects based on logic
+      # Using 'visible_if' on groups to show different outcomes on the same slide for simplicity
+      elements:
+        # GOOD ENDING
+        - id: success
+          type: group
+          visible_if: "custom.get('clues_found') >= 2 && custom.get('trust_meter') > 0"
+          elements:
+            - type: text
+              content: |
+                SUCCESS!
+                
+                You presented the Fake Alibi and the Concierge's testimony.
+                Mr. Black confessed. 
+                
+                "Fine! It was me. But your English... it was distinctive."
+              top: 300
+              left: 100
+              width: 800
+              className: bubble
+            
+            - type: text
+              content: "CASE CLOSED"
+              top: 600
+              left: 300
+              className: heading-text
+              
+            - type: button
+              text: "Play Again"
+              top: 750
+              left: 100
+              variant: primary
+              action:
+                - goto_scene:scenes/intro
+
+        # BAD ENDING - Not enough clues
+        - id: failure_clues
+          type: group
+          visible_if: "custom.get('clues_found') < 2"
+          elements:
+             - type: text
+               content: |
+                 FAILURE
+                 
+                 "You don't have enough proof, Detective!"
+                 
+                 Mr. Black walks away laughing. You need more evidence next time.
+               top: 300
+               left: 100
+               width: 800
+               className: bubble
+             
+             - type: button
+               text: "Try Again"
+               top: 600
+               left: 100
+               variant: primary
+               action:
+                 - goto_scene:scenes/intro
+
+        # BAD ENDING - Low Trust (Got kicked out)
+        - id: failure_rude
+          type: group
+          visible_if: "custom.get('trust_meter') <= 0"
+          elements:
+             - type: text
+               content: |
+                 FAILURE
+                 
+                 Security escorts you out.
+                 "You have been too rude to our guests, Detective."
+                 
+                 Watch your manners and grammar next time.
+               top: 300
+               left: 100
+               width: 800
+               className: bubble
+
+             - type: button
+               text: "Try Again"
+               top: 600
+               left: 100
+               variant: primary
+               action:
+                 - goto_scene:scenes/intro
+
+  assets:
+    images:
+      bg_finale:
+        src: https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop

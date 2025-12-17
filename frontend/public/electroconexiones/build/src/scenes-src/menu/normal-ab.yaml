@@ -1,0 +1,35 @@
+- type: group
+  animate: none
+  width: 1920
+  height: 1080
+  elements:
+    - type: image
+      src: casa
+      top: 20
+      left: 20
+      width: 65
+      height: 65
+      zIndex: 10
+      className: "PunteroClickeable"
+      action:
+        - play_sound:next
+        - goto_scene:menu
+    - type: image
+      src: ebc
+      top: 0
+      right: 20
+      width: 80
+      height: 80
+    - type: group
+      className: "reveal-border"
+      width: 1920
+      height: 80
+      top: 950
+      left: 20
+      zIndex: 10
+      elements:
+      - type: image
+        src: electro
+        animate: slideRight
+        delay: 0.5
+        className: "base__logo"

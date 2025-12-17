@@ -1,0 +1,89 @@
+scene:
+  background: bg_lounge
+  slides:
+    - id: lounge_start
+      elements:
+        - type: text
+          content: "THE VIP LOUNGE"
+          top: 50
+          left: 50
+          className: heading-text
+        
+        - type: text
+          content: |
+            You see Mr. Black sitting in the corner. He looks at his watch nervously.
+            
+            You need to ask him what he was doing last night.
+          top: 200
+          left: 100
+          width: 600
+          className: bubble
+
+        - type: button
+          text: "\"What did you do last night?\""
+          top: 450
+          left: 100
+          variant: primary
+          action:
+             - goto_id:lounge_success
+
+        - type: button
+          text: "\"What you did last night?\""
+          top: 550
+          left: 100
+          variant: primary
+          action:
+             - custom_dec:trust_meter,20
+             - goto_id:lounge_fail_grammar
+
+    - id: lounge_fail_grammar
+      elements:
+        - type: text
+          content: |
+             Mr. Black: "I... sorry, I don't understand what you mean."
+             
+             (He looks confused by your grammar.)
+          top: 300
+          left: 100
+          width: 600
+          className: bubble
+
+        - type: button
+          text: "Consumer: Try again"
+          top: 600
+          left: 100
+          variant: primary
+          action:
+            - goto_id:lounge_start
+
+    - id: lounge_success
+      elements:
+        - type: text
+          content: |
+             Mr. Black: "I was at the opera! I have my ticket right here."
+             
+             (He shows you a ticket... but wait. The date is wrong!)
+          top: 300
+          left: 100
+          width: 600
+          className: bubble
+
+        - type: text
+          content: "CLUE FOUND: Fake Alibi"
+          top: 500
+          left: 100
+          className: clue-item
+          
+        - type: button
+          text: "Confront him"
+          top: 650
+          left: 100
+          variant: primary
+          action:
+             - custom_inc:clues_found,1
+             - goto_scene:scenes/finale
+             
+  assets:
+    images:
+      bg_lounge:
+        src: https://imgs.search.brave.com/zpmoEkDk9J56RdRBejpVdlen-Mzdp-kjyC-BiseQCag/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by9s/dXh1cnktbG91bmdl/LWFyZWEtaG90ZWwt/cmVjZXB0aW9uXzQ4/MjI1Ny03ODM1MC5q/cGc_c2VtdD1haXNf/aHlicmlkJnc9NzQw/JnE9ODA

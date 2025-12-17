@@ -1,0 +1,287 @@
+scene:
+  background: bg_mansion
+  slides:
+    # ---------------------------------------------------------
+    # INTRO
+    # ---------------------------------------------------------
+    - id: intro
+      elements:
+        - type: text
+          content: |
+            THE HAUNTED MANSION
+            Enter if you dare...
+          top: 100
+          left: 500
+          width: 900
+          className: heading-text
+          animate:
+            - zoomIn
+            - pulse
+          delay: 0.5
+
+        - type: button
+          text: ENTER MANSION
+          top: 800
+          left: 830
+          variant: primary
+          animate: slideUp
+          delay: 1.5
+          action:
+            - goto_id:foyer
+            - custom_set:init_done,local,true
+            - custom_set:has_flashlight,local,false
+            - custom_set:has_key,local,false
+            - custom_set:ghosts_caught,local,0
+
+    # ---------------------------------------------------------
+    # FOYER (HUB)
+    # ---------------------------------------------------------
+    - id: foyer
+      elements:
+        - type: text
+          content: GRAND FOYER
+          top: 50
+          left: 50
+          className: heading-text
+          animate: fadeDown
+
+        - type: text
+          content: |
+            You are in the main hall. It's cold.
+            Three paths lie before you.
+          top: 200
+          left: 500
+          width: 900
+          className: bubble
+          animate: fade
+
+        # Navigation
+        - type: button
+          text: Go to Basement (Dark)
+          top: 500
+          left: 300
+          variant: primary
+          animate: slideRight
+          delay: 0.5
+          action:
+            - goto_id:basement
+
+        - type: button
+          text: Go to Library
+          top: 500
+          right: 300
+          variant: primary
+          animate: slideLeft
+          delay: 0.5
+          action:
+            - goto_id:library
+
+        - type: button
+          text: Go to Attic (Locked)
+          top: 700
+          left: 830
+          variant: primary
+          animate: slideUp
+          delay: 0.8
+          action:
+            - goto_id:attic
+
+        # Inventory Display
+        - type: text
+          content: "Flashlight: {{ custom.has_flashlight }} | Key: {{ custom.has_key }}"
+          top: 900
+          left: 50
+          className: bubble
+
+    # ---------------------------------------------------------
+    # BASEMENT
+    # ---------------------------------------------------------
+    - id: basement
+      elements:
+        - type: text
+          content: THE BASEMENT
+          top: 50
+          left: 50
+          className: heading-text
+
+        # Too Dark State
+        - id: dark_msg
+          type: text
+          content: "It's too dark to see anything! You need a light."
+          top: 300
+          left: 500
+          width: 900
+          className: scary-text
+          visible_if: "custom.get('has_flashlight') == false"
+          animate: shake
+
+        # Flashlight Item (Click to pickup)
+        # Only visible if we don't have it, but wait... if it's too dark, can we see it?
+        # Let's say we stumble upon it.
+        - id: flashlight_item
+          type: image
+          src: "https://static.vecteezy.com/system/resources/previews/009/342/293/non_2x/flashlight-clipart-design-illustration-free-png.png"
+          top: 500
+          left: 800
+          width: 200
+          height: 200
+          visible_if: "custom.get('has_flashlight') == false"
+          action:
+            - custom_set:has_flashlight,local,true
+            # No hide action, rely on visible_if re-eval or scene refresh
+            - goto_id:basement # Refresh scene to update state
+
+        # Light State
+        - id: light_msg
+          type: text
+          content: "You found the flashlight! The room is illuminated."
+          top: 300
+          left: 500
+          width: 900
+          className: bubble
+          visible_if: "custom.get('has_flashlight') == true"
+          animate: fade
+
+        - type: button
+          text: Return to Foyer
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_id:foyer
+
+    # ---------------------------------------------------------
+    # LIBRARY
+    # ---------------------------------------------------------
+    - id: library
+      elements:
+        - type: text
+          content: THE LIBRARY
+          top: 50
+          left: 50
+          className: heading-text
+
+        # Ghost Encounter
+        - id: library_ghost
+          type: image
+          src: https://cdn-icons-png.flaticon.com/512/1236/1236413.png
+          top: 300
+          right: 300
+          width: 300
+          height: 300
+          className: ghost
+          animate:
+            - pop
+            - float
+          delay: 1
+          visible_if: "custom.get('ghosts_caught') < 1"
+          action:
+            - custom_inc:ghosts_caught
+            - goto_id:library # Refresh to hide ghost
+
+        - id: ghost_msg
+          type: text
+          content: "A GHOST! CLICK TO CAPTURE IT!"
+          top: 200
+          right: 300
+          className: scary-text
+          visible_if: "custom.get('ghosts_caught') < 1"
+          animate: shake
+
+        # Key Item
+        - id: key_item
+          type: image
+          src: https://cdn-icons-png.flaticon.com/512/805/805167.png
+          top: 600
+          left: 400
+          width: 100
+          height: 100
+          visible_if: "custom.get('has_key') == false"
+          animate: 
+            - slideUp
+            - bounce
+          action:
+            - custom_set:has_key,local,true
+            - goto_id:library # Refresh
+
+        - id: key_msg
+          type: text
+          content: "You found the ATTIC KEY."
+          top: 750
+          left: 400
+          className: bubble
+          visible_if: "custom.get('has_key') == true"
+
+        - type: button
+          text: Return to Foyer
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_id:foyer
+
+    # ---------------------------------------------------------
+    # ATTIC
+    # ---------------------------------------------------------
+    - id: attic
+      elements:
+        - type: text
+          content: THE ATTIC
+          top: 50
+          left: 50
+          className: heading-text
+
+        # Locked State
+        - id: locked_msg
+          type: text
+          content: "The door is locked. You need a key."
+          top: 300
+          left: 500
+          width: 900
+          className: bubble
+          visible_if: "custom.get('has_key') == false"
+          animate: shake
+
+        - id: return_foyer
+          type: button
+          text: Return to Foyer
+          top: 600
+          left: 830
+          variant: primary
+          visible_if: "custom.get('has_key') == false"
+          action:
+            - goto_id:foyer
+
+        # Unlocked State (Win)
+        - id: win_msg
+          type: text
+          content: |
+            YOU UNLOCKED THE ATTIC!
+            
+            Inside you find the ancient artifact and banish the spirits.
+            
+            CONGRATULATIONS!
+          top: 300
+          left: 500
+          width: 900
+          className: bubble
+          visible_if: "custom.get('has_key') == true"
+          animate:
+            - zoomIn
+            - heartbeat
+
+        - id: play_again
+          type: button
+          text: PLAY AGAIN
+          top: 800
+          left: 830
+          variant: primary
+          visible_if: "custom.get('has_key') == true"
+          action:
+            - custom_set:init_done,local,null
+            - goto_id:intro
+
+  assets:
+    images:
+      bg_mansion:
+        src: https://images.unsplash.com/photo-1509557965875-b88c97052f0e?q=80&w=2070&auto=format&fit=crop

@@ -1,0 +1,32 @@
+scene:
+  background: bg_city
+  slides:
+    - id: intro_1
+      elements:
+        - type: text
+          content: |
+            NEON DETECTIVE
+            Case File: #2049
+          top: 100
+          left: 500
+          width: 900
+          className: heading-text
+        - type: text
+          content: |
+            The city never sleeps, and neither does crime.
+            You have a new lead on the "Phantom Hacker".
+          top: 300
+          left: 500
+          width: 900
+          className: bubble
+        - type: button
+          text: START INVESTIGATION
+          top: 800
+          left: 800
+          variant: primary
+          action:
+            - goto_scene:office
+  assets:
+    images:
+      bg_city:
+        src: https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2070&auto=format&fit=crop

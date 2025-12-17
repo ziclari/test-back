@@ -1,0 +1,15 @@
+meta:
+  id: "corp_espionage"
+  name: "Corporate Espionage"
+  version: "1.0"
+  description: "Infiltrate the organization and find the password."
+  requireLogin: false
+  startScene: "intro"
+  skin: "src/corp.css"
+  icon: "src/assets/icon-192x192.png"
+  favicon: "src/assets/favicon.ico"
+  themeColor: "#2c5282"
+
+scenes:
+  - id: intro
+    file: completo.yaml

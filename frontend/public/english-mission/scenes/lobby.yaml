@@ -1,0 +1,92 @@
+scene:
+  background: bg_lobby
+  slides:
+    - id: lobby_start
+      elements:
+        - type: text
+          content: "HOTEL LOBBY"
+          top: 50
+          left: 50
+          className: heading-text
+
+        - type: text
+          content: |
+             The Concierge looks busy. You need to ask him about the suspect, Mr. Black.
+             
+             How do you approach him?
+          top: 300
+          left: 100
+          width: 600
+          className: bubble
+
+        - type: button
+          text: "\"Hey! Who is Mr. Black?\""
+          top: 550
+          left: 100
+          variant: primary
+          action:
+            - custom_dec:trust_meter,10
+            - goto_id:lobby_rude
+
+        - type: button
+          text: "\"Excuse me, could you tell me about Mr. Black?\""
+          top: 650
+          left: 100
+          variant: primary
+          action:
+            - custom_inc:trust_meter,10
+            - goto_id:lobby_polite
+
+    - id: lobby_rude
+      elements:
+        - type: text
+          content: |
+             Concierge: "I beg your pardon? We value privacy here."
+             
+             (He seems annoyed. Trust decreased.)
+          top: 300
+          left: 100
+          width: 600
+          className: bubble
+
+        - type: button
+          text: "Try again politely"
+          top: 600
+          left: 100
+          variant: primary
+          action:
+            - goto_id:lobby_start
+
+    - id: lobby_polite
+      elements:
+        - type: text
+          content: |
+             Concierge: "Certainly, Detective. Mr. Black is in the Lounge. He seemed quite nervous."
+             
+             (You successfully gathered executed the approach.)
+          top: 300
+          left: 100
+          width: 600
+          className: bubble
+
+        - type: text
+          content: |
+             New Objective: Go to the Lounge and find Mr. Black.
+          top: 500
+          left: 100
+          width: 600
+          className: clue-item
+
+        - type: button
+          text: "Go to Lounge"
+          top: 650
+          left: 100
+          variant: primary
+          action:
+            - custom_inc:clues_found,1
+            - goto_scene:scenes/lounge
+
+  assets:
+    images:
+      bg_lobby:
+        src: https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop

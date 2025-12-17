@@ -1,0 +1,420 @@
+scene:
+  background: "background_2"
+
+  slides:
+    - id: "fase2-1"
+      elements:
+        - !include ./menu/interaccion.yaml
+
+        - type: "image"
+          src: "mariana_ruiz"
+          top: 0
+          left: 150
+          height: 1000
+          width: 1600
+          className: "ModoContenido"
+
+        - type: "text"
+          top: 120
+          left: 680
+          content: |
+            De: Lic. Mariana Ruiz ‹m.ruiz@electroconexiones.com›
+            Para: [Tu nombre]‹consultor@internacional@ebc.edu.mx›
+            CC: Luis Méndez ‹l.mendez@electroconexiones.com›
+          className: "EmailHeader"
+
+        - type: "text"
+          top: 220
+          left: 680
+          width: 950
+          content: |
+            Estimado/a consultor:
+
+            Quiero felicitarte por el excelente informe de segmentación y por la elección del país destino para nuestros arneses automotrices. Gracias a tu análisis, estamos listos para dar el siguiente paso: validar tus hallazgos mediante una investigación de mercado enfocada en nuestros clientes industriales.
+
+            Deberemos profundizar en los hábitos de adquisición, criterios técnicos, políticas de compra y disposición para entablar alianzas con un proveedor mexicano en el mercado que seleccionaste.
+
+            Tu encargo:
+
+            Diseñar una propuesta integral de investigación que combine métodos cualitativos y cuantitativos. Adaptar esas técnicas al entorno B2B del país elegido, considerando características locales y canales de acceso.
+
+            Esta propuesta integral formará parte de la entrega final.
+
+            Quedo atenta a tu propuesta y, como siempre, a tu dispocisión para cualquier consulta.
+
+            Saludos cordiales,
+          className: "EmailHeader"
+
+        - type: "text"
+          top: 810
+          left: 680
+          width: 950
+          content: |
+            Mariana Ruiz
+            Directora de Comercialización
+            m.ruiz@electroconexiones.com
+            +52 462 123 4567 (ext. 203).
+          className: "EmailSignature"
+
+        - type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 850
+          right: 300
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          delay: 10
+
+    - id: "fase2-1"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "text"
+          top: 150
+          left: 300
+          content: |
+            Antes de lanzar la investigación de campo, necesitamos saber a quién y cuántos vamos a
+            escuchar para que los resultados reflejen con precisión al comprador B2B en el país elegido.
+
+            Deberás de indicar:
+              - Tipo de muestreo que aplicarásicas.
+              - Tamaño estimado de la muestra.
+              - Por qué esta selección captura con fidelidad el perfil industrial y garantiza la validez de tu análisis.
+
+          className: "TextoInformeEjecutivo"
+
+        - type: "fileupload"
+          id: "TAREA_APP_3"
+          background: "subir_archivo"
+          height: 250
+          top: 500
+          left: 580
+          text: "Suelta aquí tus documentos o haz click para buscar en tu equipo"
+          className: "AreaSubirArchivo "
+          action: "upload_file"
+
+        - id: "mensaje_exito_3"
+          type: "text"
+          top: 750
+          left: 620
+          content: "Documento enviado con éxito"
+          className: "MensajeExito"
+          visible: false
+
+        - id: "mensaje_error_3"
+          type: "text"
+          top: 750
+          left: 620
+          content: "No se pudo enviar el documento"
+          className: "MensajeError"
+          visible: false
+
+        - id: "boton_TAREA_APP_3"
+          type: "button"
+          variant: "primary"
+          text:  "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+    - id: "fase2-2"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "image"
+          src: "chica"
+          delay: 0.8
+          animate: "slideLeft"
+          left: 850
+          top: 50
+          height: 950
+          className: "ModoContenido"
+
+        - type: "dialog"
+          delay: 0.8
+          animate: "slideUp"
+          title: "¡Hola, consultor!"
+          button:
+            delay: 0.8
+            label: "Ver video"
+            icon: "chica_video"
+            action: "play_video:fase1_1_video"
+            animate: ["slideUp", "heartbeat"]
+          top: 200
+          left: 350
+          width: 600
+          flip: true
+
+        - id: "btnNext3"
+          type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+    - id: "fase2-3"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "text"
+          top: 80
+          left: 100
+          content: |
+            Deberás de enviar a la directora de comercialización tu análisis de los insumos cualitativos en un documento word con los siguientes puntos:
+
+            1. Guion Grupo Focal
+              - Explicación de los temas principales detectados.
+              - Ilustración con citas clave.
+              - Observaciones sobre consenso y divergencias.
+              - Guion Entrevistas a Profundidad.
+
+            2. Síntesis de cada entrevista
+              - Insights más relevantes por perfil: 
+              - Ingeniería.
+              - Compras.
+              - Finanzas.
+              - Conexión de esos hallazgos con criterios de compra B2B
+
+            3. Técnicas Proyectivas.
+              - Descripción de los escenarios o imágenes utilizadas.
+              - Interpretación de las asociaciones frecuentes.
+              - Implicaciones para nuestra propuesta de valor industrial.
+              - Agrega un apartado de recomendaciones al final con al menos tres acciones para la estrategia de entrada B2B en función de los hallazgos.
+
+          className: "DialogBoxGradient"
+
+        - type: "fileupload"
+          id: "TAREA_APP_4"
+          background: "subir_archivo"
+          height: 250
+          top: 350
+          right: 200
+          text: "Suelta aquí tus documentos o haz click para buscar en tu equipo"
+          className: "AreaSubirArchivo "
+          action: "upload_file"
+
+        - id: "mensaje_exito_4"
+          type: "text"
+          top: 600
+          right: 200
+          content: "Documento enviado con éxito"
+          className: "MensajeExito"
+          visible: false
+
+        - id: "mensaje_error_4"
+          type: "text"
+          top: 600
+          right: 200
+          content: "No se pudo enviar el documento"
+          className: "MensajeError"
+          visible: false
+
+        - id: "boton_TAREA_APP_4"
+          type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+
+    - id: "fase2-4"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "image"
+          src: "chica_azul"
+          top: 200
+          right: 350
+          height: 600
+          zIndex: 10
+        - type: "group"
+          top: 250
+          left: 400
+          width: 1100
+          height: 500
+          className: "AudioGroupContainer"
+          elements:
+            - type: "text"
+              position: "relative"
+              width: 520
+              className: "TituloAudio"
+              content: |
+                Lic. Mariana Ruiz, Directora de Comercialización
+            - type: "audio"
+              position: "relative"
+              src: "second"
+              autoplay: false
+              loop: false
+              className: "ReproductorAudio"
+              action: "audio_finished"
+
+        - id: "fase_1_audio_siguiente"
+          type: "button"
+          variant: "primary"
+          text:  "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+
+    - id: "fase2-5"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "text"
+          top: 150
+          left: 300
+          content: |
+            En esta sección, sube un Excel con tu análisis cuantitativo:
+
+            1. Revisa columnas clave: menciones totales, sentimiento promedio, interacción media.
+            2. Grafica tendencias mensuales de menciones y sentimiento.
+            3. Identifica las 3 temáticas más discutidas y sus picos de actividad.
+            4. Correlaciona cambios de sentimiento con eventos o lanzamientos del sector.
+            5. Sube tu informe para que el comité lo analice y lo integremos al informe final.
+
+          className: "TextoInformeEjecutivo"
+
+        - type: "fileupload"
+          id: "TAREA_APP_5"
+          background: "subir_archivo"
+          height: 250
+          top: 500
+          left: 580
+          text: "Suelta aquí tus documentos o haz click para buscar en tu equipo"
+          className: "AreaSubirArchivo "
+          action: "upload_file"
+
+        - id: "mensaje_exito_5"
+          type: "text"
+          top: 750
+          left: 620
+          content: "Documento enviado con éxito"
+          className: "MensajeExito"
+          visible: false
+
+        - id: "mensaje_error_5"
+          type: "text"
+          top: 750
+          left: 620
+          content: "No se pudo enviar el documento"
+          className: "MensajeError"
+          visible: false
+
+        - id: "boton_TAREA_APP_5"
+          type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+    - id: "fase2-6"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "text"
+          top: 150
+          left: 700
+          content: "Fin de la Fase 2"
+          className: "EndScreenTitle"
+        - type: "text"
+          top: 300
+          left: 300
+          content: "Ahora cuentas con una propuesta de investigación integral que combina métodos cualitativos y cuantitativos adaptados al país seleccionado. Tus hallazgos serán la base para definir la estrategia de entrada real y preparar al equipo comercial para interactuar con los clientes industriales del país destino."
+          className: "EndScreenText"
+        - type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "goto_scene:menu"
+  assets:
+    images:
+      background_2:
+        src: "src/background/background2.jpeg"
+      chica:
+        src: "src/personajes/chica.png"
+      chica_azul:
+        src: "src/personajes/chica_azul.png"
+      chica_video:
+        src: "src/personajes/chica_video.png"
+      subir_archivo:
+        src: "src/interactivos/subir_archivo.png"
+      mariana_ruiz:
+        src: "src/chats/MarianaRuiz.png"
+      casa:
+        src: "src/interactivos/menu.png"
+      ebc: 
+        src: "src/logos/ebc_logo.png"
+      electro:
+        src: src/logos/electro.png
+
+    videos:
+      fase1_1_video:
+        id: "fase1_1_video"
+        src: "https://drive.google.com/file/d/1jBXmLGzfcmbkHUSMFo4UompgHukTbgrk/preview"
+
+    audios:
+      next:
+        src: "src/audios/audio2.mpga"
+      second:
+        src: "src/audios/audio2.mp3"
+
+  events:
+    - on: "success:upload_file_TAREA_APP_3"
+      do:
+        - "show:mensaje_exito_3"
+        - "show:boton_TAREA_APP_3"
+        - "mark_complete:TAREA_APP_3"
+
+    - on: "success:upload_file_TAREA_APP_4"
+      do:
+        - "show:mensaje_exito_4"
+        - "show:boton_TAREA_APP_4"
+        - "mark_complete:TAREA_APP_4"
+
+    - on: "success:upload_file_TAREA_APP_5"
+      do:
+        - "show:mensaje_exito_5"
+        - "show:boton_TAREA_APP_5"
+        - "mark_complete:TAREA_APP_5"
+
+    - on: "error:upload_file_TAREA_APP_3"
+      do: "show:mensaje_error_TAREA_APP_3"
+
+    - on: "error:upload_file_TAREA_APP_4"
+      do: "show:mensaje_error_TAREA_APP_4"
+
+    - on: "error:upload_file_TAREA_APP_5"
+      do: "show:mensaje_error_TAREA_APP_5"
+
+    - on: "upload_file_TAREA_APP_3"
+      do: "hide:mensaje_error_TAREA_APP_3"
+
+    - on: "upload_file_TAREA_APP_4"
+      do: "hide:mensaje_error_TAREA_APP_4"
+
+    - on: "upload_file_TAREA_APP_5"
+      do: "hide:mensaje_error_TAREA_APP_5"
+
+    - on: "audio_finished"
+      do: "show:fase_1_audio_siguiente"
+
+    - on: "end:fase1_1_video"
+      do: "show:btnNext3"

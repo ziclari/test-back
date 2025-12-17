@@ -1,0 +1,15 @@
+meta:
+  id: "haunted_mansion"
+  name: "Haunted Mansion"
+  version: "1.0"
+  description: "A spooky adventure with ghosts and animations."
+  requireLogin: false
+  startScene: "main"
+  skin: "src/haunted.css"
+  icon: "src/assets/icon-192x192.png"
+  favicon: "src/assets/favicon.ico"
+  themeColor: "#1a051a"
+
+scenes:
+  - id: main
+    file: haunted.yaml

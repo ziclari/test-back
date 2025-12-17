@@ -1,0 +1,328 @@
+scene:
+  background: bg_main
+  slides:
+    - id: welcome
+      elements:
+        - type: text
+          content: |
+            WELCOME TO THE TEST
+            A Simple Interactive Experience
+          top: 100
+          left: 500
+          width: 900
+          className: heading-text
+          animate: fadeUp
+          delay: 0.3
+        
+        - type: text
+          content: |
+            This is a test simulator to demonstrate the engine's capabilities.
+            
+            Features included:
+            • State management with variables
+            • Conditional visibility
+            • Navigation between slides
+            • Interactive buttons
+            • Score tracking
+          top: 400
+          left: 500
+          width: 900
+          className: bubble
+          animate: fadeUp
+          delay: 0.6
+
+        - type: button
+          text: START TEST
+          top: 800
+          left: 830
+          variant: primary
+          animate: 
+            - fadeUp
+            - heartbeat
+          delay: 0.9
+          action:
+            - set:score,0
+            - custom_set:visited_room1,local,false
+            - custom_set:visited_room2,local,false
+            - custom_set:has_key,local,false
+            - goto_id:hub
+            - play_sound:first
+
+    - id: hub
+      elements:
+        - type: text
+          content: CENTRAL HUB
+          top: 50
+          left: 50
+          className: heading-text
+          animate: slideDown
+
+        - type: text
+          content: |
+            Choose your path:
+            Explore the rooms to find the hidden key!
+            
+            Current Score: {{ score || 0 }}
+          top: 200
+          left: 500
+          width: 900
+          className: bubble
+          animate: fadeUp
+          delay: 0.3
+
+        # Room 1 Button
+        - type: button
+          text: ROOM 1 - Mystery Chamber
+          top: 450
+          left: 600
+          variant: primary
+          animate: slideLeft
+          delay: 0.5
+          action:
+            - goto_id:room1
+            - play_sound:first
+
+        # Room 2 Button
+        - type: button
+          text: ROOM 2 - Secret Library
+          top: 550
+          left: 600
+          variant: primary
+          animate: slideRight
+          delay: 0.7
+          action:
+            - goto_id:room2
+            - play_sound:first
+
+        # Final Door - Locked until key is found
+        - id: locked_door
+          type: text
+          content: "🔒 LOCKED DOOR - Find the key first!"
+          top: 700
+          left: 700
+          className: bubble
+          visible_if: "custom.get('has_key') == false"
+          animate:
+            - fadeUp
+            - heartbeat
+          delay: 0.9
+
+        - id: unlocked_door
+          type: button
+          text: 🔓 ENTER FINAL ROOM
+          top: 700
+          left: 700
+          variant: primary
+          visible_if: "custom.get('has_key') == true"
+          animate: 
+            - fadeUp
+            - bounce
+          action:
+            - goto_id:finale
+            - play_sound:first
+
+    - id: room1
+      elements:
+        - type: text
+          content: MYSTERY CHAMBER
+          top: 50
+          left: 50
+          className: heading-text
+          animate: zoomIn
+
+        - type: text
+          content: |
+            A dimly lit room with ancient artifacts.
+            You notice a strange puzzle on the wall.
+          top: 200
+          left: 500
+          width: 900
+          animate: fadeUp
+          delay: 0.3
+
+        # Puzzle interaction
+        - id: puzzle_unsolved
+          type: group
+          visible_if: "custom.get('visited_room1') == false"
+          elements:
+            - type: text
+              content: |
+                PUZZLE: What is 2 + 2?
+                
+                Click the correct answer:
+              top: 400
+              left: 500
+              width: 900
+              className: bubble
+
+            - type: button
+              text: "3"
+              top: 550
+              left: 600
+              variant: primary
+              action:
+                - set:score,0
+                - play_sound:bad
+
+            - type: button
+              text: "4"
+              top: 550
+              left: 800
+              variant: primary
+              action:
+                - custom_set:visited_room1,local,true
+                - inc:score,10
+                - play_sound:good
+
+            - type: button
+              text: "5"
+              top: 550
+              left: 1000
+              variant: primary
+              action:
+                - set:score,0
+                - play_sound:bad
+
+        - id: puzzle_solved
+          type: text
+          content: |
+            ✓ Puzzle Solved!
+            You earned 10 points!
+          top: 400
+          left: 500
+          width: 900
+          className: bubble
+          visible_if: "custom.get('visited_room1') == true"
+          animate:
+            - fadeUp
+            - heartbeat
+
+        - type: button
+          text: Return to Hub
+          top: 750
+          left: 830
+          variant: primary
+          action:
+            - goto_id:hub
+
+    - id: room2
+      elements:
+        - type: text
+          content: SECRET LIBRARY
+          top: 50
+          left: 50
+          className: heading-text
+          animate: rotateIn
+
+        - type: text
+          content: |
+            Dusty bookshelves line the walls.
+            One book seems out of place...
+          top: 200
+          left: 500
+          width: 900
+          className: bubble
+          animate: fadeUp
+          delay: 0.3
+
+        # Key discovery
+        - id: key_hidden
+          type: button
+          text: 📖 Examine the Strange Book
+          top: 400
+          left: 700
+          variant: primary
+          visible_if: "custom.get('has_key') == false"
+          animate: 
+           - fadeUp
+           - heartbeat
+          delay: 0.5
+          action:
+            - custom_set:has_key,local,true
+            - custom_set:visited_room2,local,true
+            - inc:score,20
+            - play_sound:book
+
+        - id: key_found
+          type: text
+          content: |
+            🔑 YOU FOUND THE KEY!
+            
+            The book was hollow inside!
+            You earned 20 points!
+            
+            Return to the hub to unlock the final door.
+          top: 350
+          left: 500
+          width: 900
+          className: bubble
+          visible_if: "custom.get('has_key') == true"
+          animate: zoomIn
+
+        - type: button
+          text: Return to Hub
+          top: 750
+          left: 830
+          variant: primary
+          action:
+            - goto_id:hub
+
+    - id: finale
+      elements:
+        - type: text
+          content: CONGRATULATIONS!
+          top: 100
+          left: 500
+          width: 900
+          className: heading-text
+          animate: 
+           - fadeUp
+           - bounce
+
+        - type: text
+          content: |
+            🎉 YOU COMPLETED THE TEST SIMULATOR! 🎉
+            
+            Final Score: {{ score || 0 }}
+            
+            You successfully:
+            ✓ Navigated between scenes
+            ✓ Solved the puzzle
+            ✓ Found the hidden key
+            ✓ Used conditional visibility
+            ✓ Tracked your score
+            
+            This demonstrates the core features of the simulator engine!
+          top: 300
+          left: 500
+          width: 900
+          className: bubble
+          animate: fadeUp
+          delay: 0.3
+
+        - type: button
+          text: RESTART
+          top: 750
+          left: 830
+          variant: primary
+          animate: 
+            - fadeUp
+            - heartbeat
+          delay: 0.6
+          action:
+            - goto_id:welcome
+
+  assets:
+    images:
+      bg_main:
+        src: src/Imagen.jpeg
+    audios:
+      first:
+        src: src/sound/hola.ogg
+      good:
+        src: src/sound/good.mp3
+      bad:
+        src: src/sound/bad.mp3
+      book:
+        src: src/sound/book.mp3
+        

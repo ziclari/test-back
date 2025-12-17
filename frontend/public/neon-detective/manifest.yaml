@@ -1,0 +1,26 @@
+meta:
+  id: "neon_detective"
+  name: "Neon Detective"
+  version: "1.0"
+  description: "A cyberpunk mystery adventure."
+  requireLogin: false
+  startScene: "intro"
+  skin: "src/neon.css"
+  icon: "src/assets/icon-192x192.png"
+  favicon: "src/assets/favicon.ico"
+  themeColor: "#050505"
+
+scenes:
+  - id: intro
+    file: intro.yaml
+    requires: []
+    next: "office"
+
+  - id: office
+    file: office.yaml
+
+  - id: street
+    file: street.yaml
+
+  - id: club
+    file: club.yaml

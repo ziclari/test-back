@@ -1,0 +1,82 @@
+/* Haunted Mansion Theme */
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@300&display=swap');
+
+body {
+    background-color: #1a051a;
+    /* Dark Purple */
+    color: #e0e0e0;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+}
+
+.heading-text {
+    font-family: 'Creepster', cursive;
+    font-size: 4rem;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff, 2px 2px 0 #000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.scary-text {
+    font-family: 'Creepster', cursive;
+    color: #ff0000;
+    font-size: 2rem;
+    text-shadow: 0 0 5px #ff0000;
+}
+
+.bubble {
+    background: rgba(20, 0, 20, 0.9);
+    border: 2px solid #550055;
+    box-shadow: 0 0 15px rgba(85, 0, 85, 0.5);
+    color: #d0d0d0;
+    padding: 20px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+}
+
+.button-primary {
+    background: #330033;
+    border: 1px solid #ff00ff;
+    color: #ff00ff;
+    font-family: 'Creepster', cursive;
+    font-size: 1.5rem;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    text-shadow: 0 0 5px #ff00ff;
+}
+
+.button-primary:hover {
+    background: #ff00ff;
+    color: #000;
+    box-shadow: 0 0 20px #ff00ff;
+    transform: scale(1.05);
+}
+
+.ghost {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.item-card {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #fff;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}

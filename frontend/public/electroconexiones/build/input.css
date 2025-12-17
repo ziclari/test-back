@@ -1,0 +1,580 @@
+@import "tailwindcss";
+@font-face {
+  font-family: "HelveticaNeueThin";
+  src: url("./fonts/HelveticaNeueThin.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "HelveticaNeueCondensed";
+  src: url("./fonts/HelveticaNeue-Condensed.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+@theme {
+    --font-helvetica: "HelveticaNeueThin", sans-serif;
+    --font-helvetica-condensed: "HelveticaNeueCondensed", sans-serif;
+    --color-brand-blue: hsl(214, 100%, 50%);
+    --color-brand-light-blue: hsl(198, 100%, 50%);
+    --color-brand-dark-blue: hsl(215, 83.53%, 16.67%);
+}
+
+.ModoContenido{
+    @apply object-contain
+}
+
+.PunteroClickeable{
+    @apply cursor-pointer
+}
+.TextoMailEncabezado{
+    @apply text-xl font-helvetica-condensed leading-none
+}
+.TextoMailFirma{
+    @apply text-xl text-gray-400 italic leading-none
+}
+.TituloChat{
+    @apply text-4xl
+}
+.InstruccionBotonChat{
+    @apply text-3xl text-white text-center
+}
+.IconoEnvioChat{
+    @apply object-contain cursor-pointer
+}
+.Icon{
+  @apply bg-white rounded-full p-2 w-16 cursor-pointer
+}
+.BurbujaMensajePropio{
+    @apply text-3xl bg-gray-100 px-16 py-4 rounded-l-4xl rounded-tr-4xl
+}
+.EnlaceChat{
+    @apply underline text-brand-light-blue capitalize
+}
+.FondoGrupoMensaje1{
+    @apply bg-gradient-to-r from-transparent to-brand-dark-blue py-8 px-16 rounded-4xl
+}
+.TextoGrupoPrincipal{
+    @apply text-white text-3xl
+}
+.TextoGrupoSecundario{
+    @apply text-gray-300 text-3xl
+}
+.AreaSubirArchivo{
+    @apply w-fit mx-auto my-4 rounded-lg p-8 text-2xl text-gray-300
+}
+.MensajeExito{
+    @apply text-green-200 text-3xl text-center
+}
+
+.MensajeError{
+    @apply text-red-200 text-3xl text-center
+}
+
+.FondoGrupoMensaje2{
+    @apply bg-gradient-to-l from-transparent to-brand-dark-blue py-16 px-16 rounded-4xl flex flex-col justify-center font-helvetica-condensed
+}
+.TituloAudio{
+    @apply text-center text-white text-5xl max-w-2xl
+}
+
+.ReproductorAudio{
+    @apply my-6 w-full max-w-xl
+}
+.TextoInformeEjecutivo{
+    @apply text-4xl text-white font-helvetica-condensed leading-[1.2]
+}
+
+.TituloFaseFinal{
+    @apply text-5xl text-white text-center font-helvetica-condensed leading-[1.2] max-w-5xl
+}
+.BurbujaDirectorFinal{
+    @apply text-3xl leading-[1.2] max-w-5xl bg-white px-6 py-4 rounded-r-4xl rounded-tl-4xl
+}
+.Comentario{
+  @apply text-xl leading-none
+}
+
+.EmailHeader{
+  @apply text-2xl font-helvetica-condensed leading-none;
+}
+.EmailBodyText{
+  @apply text-2xl leading-none;
+}
+.BigEmailBodyText{
+  @apply text-3xl leading-none;
+}
+.EmailSignature{
+  @apply text-2xl text-gray-400 italic leading-none;
+}
+.DialogBoxGradient{
+  @apply bg-gradient-to-l from-transparent to-brand-dark-blue py-8 px-16 rounded-4xl max-w-5xl text-3xl text-white font-helvetica-condensed leading-[1.2];
+}
+.AudioGroupContainer{
+  @apply bg-gradient-to-l from-transparent to-brand-dark-blue py-16 px-16 rounded-4xl flex flex-col justify-center font-helvetica-condensed;
+}
+.EndScreenTitle{
+  @apply text-7xl text-center text-white font-helvetica-condensed leading-[1.2];
+}
+.EndScreenText{
+  @apply text-5xl text-center max-w-7xl text-white font-helvetica-condensed leading-[1.2];
+}
+.InstructionText{
+  @apply text-5xl max-w-[1600px] text-white font-helvetica-condensed leading-[1.2] text-left;
+}
+.CalendarTextInstruction{
+  @apply text-white text-2xl text-center;
+}
+.modal-overlay{
+  @apply bg-black/60 backdrop-blur-sm;
+}
+.modal-close{
+  @apply  absolute top-3 right-3 p-4 flex items-center justify-center rounded-full bg-white/30 hover:bg-white/50 cursor-pointer;
+}
+.modal-container{
+  @apply w-[700px] h-[650px] bg-brand-dark-blue p-16;
+}
+.ModalTitle{
+  @apply text-white text-5xl font-helvetica-condensed mb-6;
+}
+.ModalBodyText{
+  @apply text-white mt-8 text-2xl mb-6;
+}
+.CalendarEventBox{
+  @apply text-xl cursor-pointer text-right bg-gradient-to-r from-brand-blue/50 to-brand-light-blue/50 rounded-4xl p-4 border-r-4 border-brand-blue border-solid;
+}
+.Perfil{
+  @apply mt-4 mb-4 flex gap-4 text-white text-3xl items-center
+}
+.PerfilConsultor{
+  @apply rounded-full bg-gradient-to-r from-brand-blue to-brand-light-blue px-5 py-4
+}
+body {
+    font-family: var(--font-helvetica);
+    color: #07254e;
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: var(--font-helvetica-condensed);
+  }
+  
+  .heading-text{
+    font-size: 3rem; 
+    line-height: 1.2; 
+    color: rgb(255,255,255);
+    text-align: center;
+  }
+  
+  
+  .button-primary {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.5rem 2.5rem;
+    border-radius: 100px;
+    background: linear-gradient(45deg, #006bff, #00b3ff);
+    background-size: 200% 100%;
+    color: #fff;
+    font-family: var(--font-helvetica-condensed);
+    font-size: 2.5rem;
+    font-weight: bold;
+    transition: background-position 0.4s ease, transform 0.2s ease;
+  }
+  
+  .button-primary:hover {
+    background-position: right center;
+    transform: scale(1.05);
+  }
+  
+  .dialog {
+    position: relative;
+    background: url("./chats/comentario.png") no-repeat center;
+    background-size: 100% 100%;
+    padding-top: 64px;
+    padding-right: 64px;
+    padding-bottom: 32px;
+    padding-left: 84px;
+    max-width: 900px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+  .dialog-title,
+  .dialog-text {
+    margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    text-align: left;
+  }
+  .dialog-title {
+    font-size: 3.2rem;
+    margin-bottom: 0.6rem;
+    font-weight: bold;
+  }
+  .dialog-text {
+    font-weight: bold;
+    font-size: 2.2rem;
+    line-height: 1.4;
+  } /* Bloque de “ver video” */
+  .dialog-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    cursor: pointer;
+  }
+  .dialog-button-label {
+    font-weight: bold;
+    font-size: 2rem;
+  }
+  .dialog-button-icon {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  .dialog-flip {
+    transform: scaleX(-1);
+  }
+  
+  .dialog-inner-flip {
+    transform: scaleX(-1);
+  }
+  
+  .menu {
+    display: flex;
+    gap: 2rem;
+  }
+  /* Base del card */
+  .card {
+    position: relative;
+    padding: 12px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  
+    /* estilos heredados antiguos */
+    max-width: 400px;
+    min-height: 400px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  /* Variante UNLOCKED */
+  .card--unlocked {
+    cursor: pointer;
+    opacity: 1;
+  }
+  
+  .card--unlocked .card__image {
+    filter: none;
+  }
+  
+  .card--unlocked .card__action-icon {
+    opacity: 1;
+  }
+  .card__action-icon{
+    background: linear-gradient(45deg, #006bff, #00b3ff);
+    background-size: 200% 100%;
+    color: #fff;
+    border-radius: 100%;
+    padding: 2px;
+  }
+  
+  /* Variante LOCKED */
+  .card--locked {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  
+  .card--locked .card__image {
+    filter: grayscale(1);
+  }
+  
+  .card--locked .card__lock-icon {
+    opacity: 1;
+  }
+  
+  /* Media */
+  .card__media {
+    position: relative;
+  }
+  
+  .card__image {
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    object-fit: contain;
+    position: relative;
+  }
+  
+  .card__image-button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  
+  .card__lock-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+  
+  .card__action-icon {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+  }
+  
+  /* Texto */
+  .card__text {
+    max-width: 350px;
+    margin: 1rem auto 0 auto;
+    text-align: left;
+    font-size: 1.7rem;
+    line-height: 1.2;
+    color: white;
+  }
+  
+  .card strong {
+    font-family: var(--font-helvetica-condensed);
+  }
+  
+  /* Estado inactivo */
+  .inactive {
+    filter: grayscale(100%);
+  }
+  
+  .bubble{
+    padding-top: 1rem;
+    padding-bottom: 1rem; 
+    padding-left: 4rem;
+    padding-right: 4rem; 
+    font-size: 1.875rem;
+    line-height: 2.25rem; 
+    border-radius: 20px;
+    color: #ffffff; 
+    background-color: var(--color-brand-dark-blue);
+  }
+  .last-bubble{
+    padding-left: 4rem; 
+    padding-right: 4rem; 
+    padding-top: 1rem; 
+    padding-bottom: 1rem; 
+    font-size: 1.875rem; 
+    line-height: 2.25rem; 
+    text-decoration-line: underline;
+    color: var(--color-brand-light-blue); 
+    background-color: var(--color-brand-dark-blue);
+    border-top-right-radius: 2.25rem; 
+    border-bottom-right-radius: 2.25rem;
+    border-top-left-radius: 2.25rem;
+  }
+ 
+  
+     /*
+     Variante de botones para audio
+     */
+     .button-audio {
+      border-radius: 50%;
+      background: linear-gradient(45deg, #006bff, #00b3ff);
+      color: white;
+      padding: 8px;
+      cursor: pointer;
+    }
+    .button-audio[data-hovered] {
+      background: #e8e8e8;
+    }
+    
+    .button-audio[data-pressed] {
+      background: #d0d0d0;
+    }
+    
+    .button-audio[data-disabled] {
+      opacity: 0.5;
+    }
+
+
+     /* ==========================
+     BASE GENERAL
+  ========================== */
+  .base {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-inline: 1rem;
+    box-sizing: border-box;
+    overflow: hidden;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  
+  /* ==========================
+       TOP Y BOTTOM
+    ========================== */
+  .base__top {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    right: 0;
+    z-index: 20;
+  }
+  
+  .base__bottom {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    z-index: 20;
+  }
+  .slide-in-left {
+    -webkit-animation: slide-in-left 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+      both;
+    animation: slide-in-left 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+  @-webkit-keyframes slide-in-left {
+    0% {
+      -webkit-transform: translateX(-1000px);
+      transform: translateX(-1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  /* ==========================
+       ELEMENTOS INTERNOS
+    ========================== */
+  .base__logo-top {
+    width: 75px;
+  }
+  
+  .base__icon-top {
+    width: 65px;
+  }
+  
+  .base__logo {
+    max-width: 700px;
+    object-fit: contain;
+    margin-bottom: 8px;
+  }
+  
+  .base__hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 32px;
+    font-style: italic;
+  }
+  
+  /* ==========================
+       REVEAL BORDER (solo en montaje)
+    ========================== */
+  .reveal-border {
+    /* position: relative;*/
+    border-bottom: 2px solid transparent;
+    overflow: hidden;
+  }
+  
+  .reveal-border::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 2px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    transform: scaleX(0);
+    transform-origin: right;
+    animation: borderReveal 1.2s ease-out forwards;
+  }
+  
+  @keyframes borderReveal {
+    0% {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    60% {
+      opacity: 1;
+    }
+    100% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+
+
+/* Cada slot puede recibir interacción */
+.menu-slot {
+  position: absolute;
+  pointer-events: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* TOP */
+.menu-slot__top {
+  top: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;   /* centrar items horizontalmente */
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+/* BOTTOM */
+.menu-slot__bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
+/* LEFT */
+.menu-slot__left {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+/* RIGHT */
+.menu-slot__right {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
+/* FLOATING: libre, centrado por defecto */
+.menu-slot__floating {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+/* Estilos mínimos de item */
+.menu-item {
+  pointer-events: auto; /* asegúrate de que se puede clickear */
+}

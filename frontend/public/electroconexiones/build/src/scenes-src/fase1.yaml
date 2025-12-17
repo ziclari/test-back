@@ -1,0 +1,604 @@
+scene:
+  background: "background_2"
+
+  slides:
+    - id: "fase1-1"
+      elements:
+        - !include ./menu/normal-ab.yaml
+
+        - type: "image"
+          src: "computadora"
+          top: 0
+          left: 0
+          height: 1200
+          className: "ModoContenido"
+
+        - type: "image"
+          animate:
+            sequence: ["zoomIn", "heartbeat"]
+            repeat: infinite
+          delay: 2
+          src: "notificacion"
+          top: 400
+          left: 850
+          width: 120
+          height: 120
+          className: " PunteroClickeable"
+          action:
+            - "play_sound:notification"
+            - "next_slide"
+
+    - id: "fase1-2"
+      elements:
+        - !include ./menu/normal-ab.yaml
+
+        - type: "image"
+          src: "computadora"
+          top: 0
+          left: 0
+          height: 1200
+          className: "ModoContenido"
+
+        - type: "image"
+          src: "luis_mendez"
+          top: 35
+          left: 177
+          width: 1455
+          className: "ModoContenido"
+
+        - type: "text"
+          top: 150
+          left: 660
+          content: |
+            De: Lic. Luis Méndez, Director General
+            Para: Consultor internacional
+            Asunto: Asignación individual urgente - Proyecto de expansión internacional
+          className: "TextoMailEncabezado"
+
+        - type: "text"
+          top: 240
+          left: 660
+          width: 950
+          content: |
+            Estimado/a consultor:
+
+            Espero te encuentres bien. Como parte de tu integración al Comité de Estrategia Internacional de Electro Conexiones del Bajío, te comparto los detalles de tu primera tarea profesional:
+
+            Analizar comparativamente los mercados De:
+
+            - Estados Unidos
+            - Canadá
+            - China
+            - Corea del Sur
+
+            Deberás de seleccionar el país que ofrece la mejor oportunidad para la exportación de nuestros arneses, hilos y cables automotrices. Necesitas aplicar los criterios de segmentación internacional, evaluar los perfiles de los decisores B2B y proponer de manera preliminar una mezcla de marketing.
+
+            Para cualquier duda o retroalimentación directa sobre los criterios y alcances del análisis, por favor contacta a la Lic. Mariana Ruíz, Directora de Comercialización, quién será tu enlace operativo en esta fase:
+          className: "Comentario"
+
+        - type: "text"
+          top: 610
+          left: 660
+          width: 950
+          content: |
+            Mariana Ruiz
+            Directora de Comercialización
+            m.ruiz@electroconexiones.com
+            +52 462 123 4567 (ext. 203).
+          className: "TextoMailFirma"
+
+        - type: "text"
+          top: 700
+          left: 660
+          width: 950
+          content: |
+            Agradezco de antemano tu profesionalismo y compromiso. Confío en que tu recomendación individual cimentará la siguiente decisión colectiva del Comité
+
+            Quedo atento a tu informe.
+            Saludos cordiales,
+          className: "Comentario"
+
+        - type: "text"
+          top: 820
+          left: 660
+          width: 950
+          content: |
+            Luis Méndez
+            Director General
+            Electro Conexiones del Bajío S. A. de C. V.
+          className: "TextoMailFirma"
+
+        - type: "button"
+          variant: "primary"
+          text: "Iniciar conversación"
+          top: 850
+          right: 320
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          delay: 10
+
+    - id: "fase1-3"
+      elements:
+        - !include ./menu/interaccion.yaml
+
+        - type: "image"
+          src: "chat_personal"
+          top: 35
+          left: 100
+          width: 1700
+          className: "ModoContenido"
+        - type: "text"
+          top: 70
+          left: 230
+          content: "Mariana Ruiz"
+          className: "TituloChat"
+
+        - type: "text"
+          top: 850
+          left: 220
+          content: "Hola"
+          className: "TituloChat"
+
+        - type: "text"
+          top: 960
+          right: 120
+          width: 200
+          content: "Dale clic para enviar mensaje"
+          className: "InstruccionBotonChat"
+
+        - type: "image"
+          src: "enviar"
+          top: 830
+          right: 10%
+          width: 70
+          height: 70
+          className: "IconoEnvioChat clickable"
+          animate: ["slideUp", "heartbeat"]
+          action:
+            - "play_sound:next"
+            - "next_slide"
+
+    - id: "fase1-4"
+      elements:
+        - !include ./menu/interaccion.yaml
+
+        - type: "image"
+          src: "chat_personal"
+          top: 35
+          left: 100
+          width: 1700
+          className: "ModoContenido"
+        - type: "text"
+          top: 70
+          left: 230
+          content: "Mariana Ruiz"
+          className: "TituloChat"
+
+        - type: "text"
+          top: 150
+          right: 220
+          content: "Hola"
+          className: "BurbujaMensajePropio"
+
+        - type: "text"
+          top: 200
+          left: 220
+          content: |
+            Hola, justo iba a contactarte.
+            A continuación te comparto algunos recursos que te serán de gran ayuda
+            para avanzar con la segmentación internacional
+          className: "bubble"
+          delay: 2
+
+        - type: "group"
+          top: 345
+          left: 220
+          className: "bubble"
+          delay: 3
+          elements:
+            - type: "text"
+              position: "relative"
+              content: |
+                Perfil de exportación de autopartes
+            - type: "link"
+              position: "relative"
+              text: "Partes y accesorios de vehículos automotores"
+              href: "https://www.economia.gob.mx/datamexico/es/profile/product/parts-and-accessories-of-motor-vehicles?redirect=true"
+              className: "EnlaceChat"
+        - type: "group"
+          top: 455
+          left: 220
+          delay: 4
+          className: "bubble"
+          elements:
+            - type: "text"
+              position: "relative"
+              content: |
+                Cómo el T-MEC impulsa la expansión de pymes
+            - type: "link"
+              position: "relative"
+              text: "T-MEC"
+              href: "https://www.up.edu.mx/noticias/expertos-up/como-el-t-mec-impulsa-el-emprendimiento-y-la-expansion-de-pymes/#:~:text=El%20T%2DMEC%20no%20solo,impacto%20en%20el%20mundo%20empresarial"
+              className: "EnlaceChat"
+
+        - type: "text"
+          top: 565
+          left: 220
+          width: 1500
+          delay: 5
+          content: "También quiero comentarte que el Comité de Estrategia Internacional ha preparado fichas básicas de segmentación para Estados Unidos, Canadá, China y Corea del Sur. Estas fichas incluyen campos para todas las variables B2B (demográficas, operativas y de compra). Deberás completarlas con la información que extraigas de fuentes confiables y portales de promoción comercial."
+          className: "bubble"
+
+        - type: "link"
+          top: 760
+          left: 220
+          text: "Abrir documento"
+          href: "https://docs.google.com/document/d/15gjgxNHi5sT8dnNGxvN_bcFes5ukBSew/edit"
+          delay: 6
+          className: "last-bubble"
+
+        - type: "image"
+          src: "chica_azul"
+          top: 750
+          left: 150
+          width: 60
+
+        - type: "image"
+          src: "enviar"
+          top: 830
+          right: 10%
+          width: 70
+          height: 70
+          className: "ModoContenido"
+
+        - type: "button"
+          variant: "primary"
+          text: "Continuar"
+          top: 960
+          right: 120
+          delay: 8
+          action:
+            - "play_sound:next"
+            - "next_slide"
+
+    - id: "fase1-5"
+      background: "background_1"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "image"
+          src: "chica_azul"
+          top: 250
+          left: 200
+
+        - type: "group"
+          top: 130
+          right: 100
+          width: 1100
+          className: "FondoGrupoMensaje1"
+          elements:
+            - type: "text"
+              position: "relative"
+              className: "TextoGrupoPrincipal"
+              content: |
+                El Comité de Estrategia Internacional ha definido que necesitamos una tabla comparativa de los cuatro mercados: Estados Unidos, Canadá, China y Corea del Sur con las variables B2B en sus tres categorías.
+
+                Una vez hayas completado la tabla con datos a partir de la segmentación realizada, sube el archivo Word en el siguiente espacio. Ahí el Comité podrá revisarlo y consolidarlo en el informe final.
+
+                Quedo atenta a cualquier duda.
+            - type: "text"
+              position: "relative"
+              className: "TextoGrupoSecundario"
+              content: |
+
+                — Lic. Mariana Ruiz
+                Directora de Comercialización
+
+            - type: "fileupload"
+              id: "TAREA_APP_1"
+              background: "subir_archivo"
+              height: 250
+              position: "relative"
+              text: "Suelta aquí tus documentos o haz click para buscar en tu equipo"
+              className: "AreaSubirArchivo"
+              action: "upload_file"
+
+            - id: "mensaje_exito_1"
+              type: "text"
+              position: "relative"
+              content: "Documento enviado con éxito"
+              className: "MensajeExito"
+              visible: false
+
+            - id: "mensaje_error_1"
+              type: "text"
+              position: "relative"
+              content: "No se pudo enviar el documento"
+              className: "MensajeError"
+              visible: false
+
+        - id: "boton_TAREA_APP_1"
+          type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+
+    - id: "fase1-6"
+      background: "background_1"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "image"
+          src: "chica_azul"
+          top: 200
+          right: 350
+          height: 600
+          zIndex: 10
+
+        - type: "group"
+          top: 250
+          left: 400
+          width: 1100
+          height: 500
+          className: "AudioGroupContainer"
+          elements:
+            - type: "text"
+              position: "relative"
+              width: 520
+              className: "TituloAudio"
+              content: |
+                Lic. Mariana Ruiz, Directora de Comercialización
+            - type: "audio"
+              position: "relative"
+              src: "first"
+              autoplay: true
+              loop: false
+              className: "ReproductorAudio"
+              action: "audio_finished"
+
+        - id: "audio_siguiente"
+          type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+
+    - id: "fase1-7"
+      background: "background_1"
+      elements:
+        - !include ./menu/normal-ab.yaml
+
+        - type: "image"
+          src: "chica"
+          delay: 0.8
+          animate: "slideRight"
+          top: 50
+          left: 200
+          height: 950
+          zIndex: 5
+          className: "ModoContenido"
+
+        - type: "dialog"
+          delay: 0.8
+          animate: "slideUp"
+          title: "¡Excelente trabajo, consultor!"
+          text: "Gracias a tu análisis hemos definido nuestro país destino."
+          button:
+            delay: 0.8
+            label: "Ver video"
+            icon: "chica_video"
+            action: "play_video:end_video"
+            animate: ["slideUp", "heartbeat"]
+          top: 200
+          left: 850
+          width: 850
+
+        - id: "btnNext2"
+          type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 650
+          right: 250
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+
+    - id: "fase1-8"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "text"
+          top: 150
+          left: 150
+          content: |
+            Para cerrar, será necesario que prepares un informe ejecutivo en formato .docx, dirigido al Comité de Estrategia Internacional.
+
+            Este documento deberá contener los puntos clave de tu propuesta para el ingreso al mercado objetivo, incluyendo:
+
+             - Objetivo del informe.
+             - Tabla comparativa de los cuatro mercados.
+             - Selección del país destino y justificación.
+             - Estrategia de precios, considerando aranceles, costos logísticos y márgenes esperados.
+             - Canal de distribución sugerido, en función del perfil de nuestros clientes industriales.
+             - Requisitos técnicos o regulatorios que debamos atender para operar en el país destino.
+             - Acciones de promoción B2B: al menos tres iniciativas concretas orientadas al posicionamiento de nuestra oferta.
+          className: "TextoInformeEjecutivo"
+
+        - type: "fileupload"
+          id: "TAREA_APP_2"
+          background: "subir_archivo"
+          height: 250
+          top: 620
+          left: 580
+          text: "Suelta aquí tus documentos o haz click para buscar en tu equipo"
+          className: "AreaSubirArchivo "
+          action: "upload_file"
+
+        - id: "mensaje_exito_2"
+          type: "text"
+          top: 900
+          left: 620
+          content: "Documento enviado con éxito"
+          className: "MensajeExito"
+          visible: false
+
+        - id: "mensaje_error_2"
+          type: "text"
+          top: 900
+          left: 620
+          content: "No se pudo enviar el documento"
+          className: "MensajeError"
+          visible: false
+
+        - id: "boton_TAREA_APP_2"
+          type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "next_slide"
+          visible: false
+
+    - id: "fase1-9"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "text"
+          top: 150
+          left: 440
+          content: |
+            La primera fase ha llegado a su fin, el comité ha recibido tu análisis completo.
+          className: "TituloFaseFinal"
+        - type: "button"
+          top: 300
+          left: 900
+          imageSrc: "down_arrow"
+          imageAlt: "Flecha abajo"
+          imageClassName: "Icon"
+          action:
+            - "play_sound:next"
+            - "next_slide"
+
+    - id: "fase1-10"
+      elements:
+        - !include ./menu/normal.yaml
+
+        - type: "text"
+          top: 150
+          left: 440
+          content: |
+            La primera fase ha llegado a su fin, el comité ha recibido tu análisis completo.
+          className: "TituloFaseFinal"
+
+        - type: "text"
+          top: 450
+          left: 540
+          content: |
+            <strong class="font-helvetica-condensed ">Director general</strong>: Gracias a tu trabajo, Con base en lo que compartiste, continuaremos con el diseño de la estrategia de entrada al mercado seleccionado. El equipo revisará los elementos clave para integrarlos en la siguiente etapa del proyecto.
+          className: "BurbujaDirectorFinal"
+        - type: "image"
+          src: "chico_azul"
+          top: 450
+          left: 300
+          height: 200
+          width: 200
+          className: "ModoContenido"
+
+        - type: "button"
+          variant: "primary"
+          text: "Siguiente"
+          top: 930
+          right: 120
+          action:
+            - "play_sound:next"
+            - "goto_scene:menu"
+  assets:
+    images:
+      background_1:
+        src: "src/background/background1.jpeg"
+      background_2:
+        src: "src/background/background2.jpeg"
+      chica:
+        src: "src/personajes/chica.png"
+      chica_azul:
+        src: "src/personajes/chica_azul.png"
+      chica_video:
+        src: "src/personajes/chica_video.png"
+      subir_archivo:
+        src: "src/interactivos/subir_archivo.png"
+      computadora:
+        src: "src/background/computadora.png"
+      notificacion:
+        src: "src/interactivos/notificacion.png"
+      luis_mendez:
+        src: "src/chats/luisMendez.png"
+      chat_personal:
+        src: "src/chats/chatPersonal.png"
+      enviar:
+        src: "src/interactivos/enviar.png"
+      chico_azul:
+        src: "src/personajes/chico_azul.png"
+      casa:
+        src: "src/interactivos/menu.png"
+      ebc: 
+        src: "src/logos/ebc_logo.png"
+      electro:
+        src: "src/logos/electro.png"
+      down_arrow: 
+        src: "src/icons/arrow-down.png"
+    videos:
+      end_video:
+        id: "end_video"
+        src: "https://drive.google.com/file/d/1yNf8u6wA8aLQhyp84NsVQ8odMxIy_u7g/preview"
+
+    audios:
+      notification:
+        src: "src/audios/audio1.mpga"
+      next:
+        src: "src/audios/audio2.mpga"
+      first:
+        src: "src/audios/audio1.mp3"
+
+  events:
+    - on: "success:upload_file_TAREA_APP_1"
+      do:
+        - "show:mensaje_exito_1"
+        - "show:boton_TAREA_APP_1"
+        - "mark_complete:TAREA_APP_1"
+
+    - on: "success:upload_file_TAREA_APP_2"
+      do:
+        - "show:mensaje_exito_2"
+        - "show:boton_TAREA_APP_2"
+        - "mark_complete:TAREA_APP_2"
+
+    - on: "error:upload_file_TAREA_APP_1"
+      do: "show:mensaje_error_1"
+
+    - on: "error:upload_file_TAREA_APP_2"
+      do: "show:mensaje_error_2"
+
+    - on: "upload_file_TAREA_APP_1"
+      do: "hide:mensaje_error_1"
+
+    - on: "upload_file_TAREA_APP_1"
+      do: "hide:mensaje_error_1"
+
+    - on: "audio_finished"
+      do: "show:audio_siguiente"
+
+    - on: "end:end_video"
+      do: "show:btnNext2"

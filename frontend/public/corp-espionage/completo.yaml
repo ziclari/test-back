@@ -1,0 +1,255 @@
+scene:
+  background: bg_lobby
+  slides:
+    - id: intro
+      elements:
+        - type: text
+          content: |
+            MISSION BRIEFING
+            Target: OmniCorp
+          top: 100
+          left: 500
+          width: 900
+          className: heading-text
+        
+        - type: text
+          content: |
+            Your objective is to access the Server Room.
+            However, it is password protected.
+            
+            Intel suggests one of the executives has written the password on a sticky note.
+            Explore the Organizational Chart to find it.
+          top: 300
+          left: 500
+          width: 900
+          className: bubble
+
+        - type: button
+          text: START MISSION
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_id:org_chart
+            - custom_set:found_password,local,false
+
+    - id: org_chart
+      elements:
+        - type: text
+          content: ORGANIZATIONAL CHART
+          top: 50
+          left: 50
+          className: heading-text
+
+        # CEO Node
+        - type: group
+          top: 200
+          left: 860
+          className: org-node
+          action:
+            - goto_id:profile_ceo
+          elements:
+            - type: text
+              content: "CEO"
+              position: relative
+
+        # CTO Node
+        - type: group
+          top: 400
+          left: 600
+          className: org-node
+          action:
+            - goto_id:profile_cto
+          elements:
+            - type: text
+              content: "CTO"
+              position: relative
+
+        # CFO Node
+        - type: group
+          top: 400
+          left: 1120
+          className: org-node
+          action:
+            - goto_id:profile_cfo
+          elements:
+            - type: text
+              content: "CFO"
+              position: relative
+
+        # Server Room Link
+        - type: button
+          text: ACCESS SERVER ROOM
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_id:server_room
+
+    - id: profile_ceo
+      elements:
+        - type: group
+          top: 100
+          left: 560
+          width: 800
+          className: profile-card
+          elements:
+            - type: image
+              src: https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1000&auto=format&fit=crop
+              width: 200
+              height: 200
+              position: relative
+            - type: text
+              content: |
+                Name: Arthur Pendragon
+                Role: Chief Executive Officer
+                Bio: Visionary leader with a passion for efficiency.
+              position: relative
+              className: bubble
+
+        - type: button
+          text: Back to Chart
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_id:org_chart
+
+    - id: profile_cfo
+      elements:
+        - type: group
+          top: 100
+          left: 560
+          width: 800
+          className: profile-card
+          elements:
+            - type: image
+              src: https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop
+              width: 200
+              height: 200
+              position: relative
+            - type: text
+              content: |
+                Name: Marcus Wright
+                Role: Chief Financial Officer
+                Bio: Numbers never lie. People do.
+              position: relative
+              className: bubble
+
+        - type: button
+          text: Back to Chart
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_id:org_chart
+    - id: profile_cto
+      elements:
+        - type: group
+          top: 100
+          left: 560
+          width: 800
+          className: profile-card
+          elements:
+            - type: image
+              src: https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop
+              width: 200
+              height: 200
+              position: relative
+            - type: text
+              content: |
+                Name: Sarah Connor
+                Role: Chief Technology Officer
+                Bio: Cyber-security expert. Paranoid about data breaches.
+              position: relative
+              className: bubble
+            
+            # The Secret Sticky Note
+        - id: sticky_note
+          type: text
+          content: "PWD: Admin123"
+          position: absolute
+          top: 50
+          right: 50
+          className: sticky-note
+          visible_if: "custom.get('found_password') == false"
+          action:
+            - custom_set:found_password,local,true
+        - id: msg_found
+          type: text
+          content: "Password Acquired!"
+          position: absolute
+          top: 300
+          right: 50
+          className: bubble
+          visible_if: "custom.get('found_password') == true"
+
+        - type: button
+          text: Back to Chart
+          top: 800
+          left: 830
+          variant: primary
+          action:
+            - goto_id:org_chart
+    - id: server_room
+      elements:
+        - type: text
+          content: SERVER ROOM ACCESS
+          top: 50
+          left: 50
+          className: heading-text
+
+        # Access Denied State
+        - id: msg_denied
+          type: group
+          visible_if: "custom.get('found_password') == false"
+          elements:
+            - type: text
+              content: |
+                ACCESS DENIED.
+                PASSWORD REQUIRED.
+              top: 300
+              left: 500
+              width: 900
+              className: bubble
+            
+            - type: button
+              text: Return to Chart
+              top: 600
+              left: 830
+              variant: primary
+              action:
+                - goto_id:org_chart
+
+        # Access Granted State
+        - id: msg_granted
+          type: group
+          visible_if: "custom.get('found_password') == true"
+          elements:
+            - type: text
+              content: |
+                ACCESS GRANTED.
+                DOWNLOADING DATA...
+                
+                MISSION ACCOMPLISHED.
+              top: 300
+              left: 500
+              width: 900
+              className: bubble
+            
+            - type: button
+              text: Restart Mission
+              top: 600
+              left: 830
+              variant: primary
+              action:
+                - custom_set:found_password,local,false
+                - goto_id:intro
+  assets:
+    images:
+      bg_lobby:
+        src: https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop
+      bg_office:
+        src: https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop
+      bg_server:
+        src: https://plus.unsplash.com/premium_photo-1676823547752-1d24e8597047?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bGl2aW5nJTIwcm9vbXxlbnwwfHwwfHx8MA%3D%3D
