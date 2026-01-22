@@ -17,7 +17,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -58,7 +58,7 @@ scene:
           height: 120
           className: " PunteroClickeable"
           action:
-            - play_sound:notification
+            - play_sound_transition:notification
             - next_slide
     - id: fase1-2
       elements:
@@ -76,7 +76,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -172,7 +172,7 @@ scene:
           top: 850
           right: 320
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
           delay: 10
     - id: fase1-3
@@ -191,7 +191,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -232,7 +232,7 @@ scene:
             - slideUp
             - heartbeat
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
     - id: fase1-4
       elements:
@@ -250,7 +250,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -346,7 +346,7 @@ scene:
           right: 120
           delay: 8
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
     - id: fase1-5
       background: background_1
@@ -365,7 +365,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -439,7 +439,7 @@ scene:
           top: 930
           right: 120
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
           visible: false
     - id: fase1-6
@@ -459,7 +459,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -513,7 +513,7 @@ scene:
           top: 930
           right: 120
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
           visible: false
     - id: fase1-7
@@ -533,7 +533,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -586,7 +586,7 @@ scene:
           top: 650
           right: 250
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
           visible: false
     - id: fase1-8
@@ -605,7 +605,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -672,7 +672,7 @@ scene:
           top: 930
           right: 120
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
           visible: false
     - id: fase1-9
@@ -691,7 +691,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -725,7 +725,7 @@ scene:
           imageAlt: Flecha abajo
           imageClassName: Icon
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
     - id: fase1-10
       elements:
@@ -743,7 +743,7 @@ scene:
               zIndex: 10
               className: PunteroClickeable
               action:
-                - play_sound:next
+                - play_sound_transition:next
                 - goto_scene:menu
             - type: image
               src: ebc
@@ -789,7 +789,7 @@ scene:
           top: 930
           right: 120
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - goto_scene:menu
   assets:
     images:

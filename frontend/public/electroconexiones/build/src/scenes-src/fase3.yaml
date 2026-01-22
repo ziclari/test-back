@@ -39,7 +39,7 @@ scene:
           right: 120
           delay: 0.8
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
 
@@ -70,7 +70,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
 
     - id: "fase3-3"
@@ -97,7 +97,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
 
     - id: "fase3-4"
@@ -120,7 +120,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "mark_complete:fase3_done"
   assets:
     images:

@@ -8,6 +8,7 @@ import multer from "multer";
 import helmet from "helmet";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import fs from 'fs';
 
 dotenv.config();
 
@@ -27,8 +28,16 @@ if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
 var router = express.Router();
 
 const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 1024 * 1024 * 1024 }, // 1 GB
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, '/tmp');
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.fieldname + '-' + uniqueSuffix);
+    }
+  }),
+  limits: { fileSize: 1024 * 1024 * 1024 }, // 1 GB ahora es seguro
 });
 
 // Configuración de CORS para múltiples dominios
@@ -434,7 +443,9 @@ app.post(
 
     try {
       const form = new FormData();
-      form.append("file_1", req.file.buffer, {
+      const stream = fs.createReadStream(req.file.path);
+
+      form.append("file_1", stream, {
         filename: req.file.originalname,
         contentType: req.file.mimetype,
       });
@@ -455,10 +466,12 @@ app.post(
       if (!Array.isArray(response.data) || response.data.length === 0) {
         return res.status(500).json({ error: "Respuesta inválida de Moodle" });
       }
-
+      
       res.json(response.data[0]);
+      fs.unlinkSync(req.file.path);
     } catch (err) {
-      //console.error("Error al subir archivo:", err.message);
+      if (req.file) fs.unlinkSync(req.file.path);
+      console.error("Error al subir archivo:", err.message);
       res.status(500).json({
         error: "Error al subir archivo",
         details: err.message,

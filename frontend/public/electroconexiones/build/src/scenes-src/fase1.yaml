@@ -25,7 +25,7 @@ scene:
           height: 120
           className: " PunteroClickeable"
           action:
-            - "play_sound:notification"
+            - "play_sound_transition:notification"
             - "next_slide"
 
     - id: "fase1-2"
@@ -114,7 +114,7 @@ scene:
           top: 850
           right: 320
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           delay: 10
 
@@ -156,7 +156,7 @@ scene:
           className: "IconoEnvioChat clickable"
           animate: ["slideUp", "heartbeat"]
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
 
     - id: "fase1-4"
@@ -259,7 +259,7 @@ scene:
           right: 120
           delay: 8
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
 
     - id: "fase1-5"
@@ -325,7 +325,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
 
@@ -369,7 +369,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
 
@@ -410,7 +410,7 @@ scene:
           top: 650
           right: 250
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
 
@@ -468,7 +468,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
 
@@ -489,7 +489,7 @@ scene:
           imageAlt: "Flecha abajo"
           imageClassName: "Icon"
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
 
     - id: "fase1-10"
@@ -523,7 +523,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "goto_scene:menu"
   assets:
     images:

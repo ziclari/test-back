@@ -3,6 +3,25 @@ import { submitAssignment } from "../external-services/moodle-service/moodleServ
 import { emitEvent } from "../events/eventBus";
 import { getPath } from "../config-parser/getPath";
 
+const registry = {
+    audios: new Set(),
+    timers: new Set(),
+    assetVersion: Date.now(),
+    purge() {
+        this.audios.forEach(a => {
+            if (!a.__transitional) {
+                a.pause();
+                a.src = "";
+                this.audios.delete(a);
+            }
+        });
+
+        this.timers.forEach(t => clearTimeout(t));
+        this.timers.clear();
+
+        this.assetVersion = Date.now();
+    }
+};
 // UIController: puente entre acciones YAML y la aplicación
 export const UIController = {
 
@@ -23,41 +42,34 @@ export const UIController = {
     // NAVEGACIÓN
     // ---------------------------------------
     previousSlide() {
+        registry.purge(); // Detener audios/timers del slide actual
         const currentIndex = stateManager.get("slideIndex") || 0;
-        const newIndex = Math.max(currentIndex - 1, 0);
-        stateManager.set("slideIndex", newIndex);
+        stateManager.set("slideIndex", Math.max(currentIndex - 1, 0));
     },
 
     nextSlide() {
+        registry.purge();
         const currentIndex = stateManager.get("slideIndex") || 0;
-        const maxSlides = stateManager.get("slideCount") || 0;
-        const newIndex = Math.min(currentIndex + 1, maxSlides - 1);
-        stateManager.set("slideIndex", newIndex);
+        const max = stateManager.get("slideCount") || 0;
+        stateManager.set("slideIndex", Math.min(currentIndex + 1, max - 1));
     },
 
     gotoId(slideId, scene) {
-        if (!scene || !Array.isArray(scene.slides)) {
-            console.warn("gotoId: escena inválida");
-            return;
-        }
-    
-        const slideIndex = scene.slides.findIndex(slide => slide.id === slideId);
+        if (!scene?.slides) return console.warn("gotoId: Escena sin slides");
         
-        if (slideIndex === -1) {
-            console.warn(`gotoId: no se encontró el slide "${slideId}"`);
-            return;
-        }
-    
-        stateManager.set("slideIndex", slideIndex);
+        const index = scene.slides.findIndex(s => s.id === slideId);
+        if (index === -1) return console.warn(`gotoId: Slide ${slideId} no encontrado`);
+
+        registry.purge(); // Limpiar antes de movernos
+        stateManager.set("slideIndex", index);
         this.applyVisibilityRules(scene);
-        
-        const targetSlide = scene.slides[slideIndex];
-        if (targetSlide?.on_enter) {
-            this.execute(targetSlide.on_enter, scene);
-        }
+
+        const target = scene.slides[index];
+        if (target?.on_enter) this.execute(target.on_enter, scene);
     },
 
     gotoScene(filename, scene = null) {
+        registry.purge(); 
         const sceneFile = `${filename}.yaml`;
         
         stateManager.set("currentSceneFile", sceneFile);
@@ -65,15 +77,8 @@ export const UIController = {
         
         if (scene) {
             this.applyVisibilityRules(scene);
-            
-            if (scene?.on_enter) {
-                this.execute(scene.on_enter, scene);
-            }
-            
-            const firstSlide = scene.slides?.[0];
-            if (firstSlide?.on_enter) {
-                this.execute(firstSlide.on_enter, scene);
-            }
+            if (scene.on_enter) this.execute(scene.on_enter, scene);
+            if (scene.slides?.[0]?.on_enter) this.execute(scene.slides[0].on_enter, scene);
         }
         
         emitEvent("scene:request", sceneFile);
@@ -86,17 +91,25 @@ export const UIController = {
         stateManager.set("videoId", videoId);
     },
 
-    playSound(soundId, scene) {
-        try {
-            const soundSource = scene?.assets?.audios?.[soundId]?.src || soundId;
-            const audioPath = getPath(soundSource);
-            const audio = new Audio(audioPath);
-            audio.play().catch(error => {
-                console.warn("No se pudo reproducir el audio:", error);
-            });
-        } catch (error) {
-            console.warn("Error al intentar reproducir audio:", error);
-        }
+    playSound(soundId, scene, options = {}) {
+        const rawSrc = scene?.assets?.audios?.[soundId]?.src || soundId;
+        const path = getPath(rawSrc);
+        const url = `${path}${path.includes('?') ? '&' : '?'}v=${registry.assetVersion}`;
+
+        const audio = new Audio(url);
+        audio.__transitional = options.transitional === true;
+
+        registry.audios.add(audio);
+
+        const cleanup = () => registry.audios.delete(audio);
+        audio.addEventListener('ended', cleanup, { once: true });
+        audio.addEventListener('error', cleanup, { once: true });
+
+        audio.play().catch(e => {
+            if (e.name !== 'AbortError') {
+                console.warn("Audio play error:", e);
+            }
+        });
     },
 
     audioFinished() {
@@ -108,41 +121,35 @@ export const UIController = {
     // ---------------------------------------
     wait(milliseconds) {
         const delay = parseInt(milliseconds, 10) || 1000;
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             emitEvent(`wait_end:${delay}`);
+            registry.timers.delete(timer);
         }, delay);
+        registry.timers.set(timer);
     },
 
     // ---------------------------------------
     // SUBIR ARCHIVOS
     // ---------------------------------------
     async uploadFile(action) {
+        const file = action.__file;
+        if (!file) return console.error("No hay archivo para subir");
+
         try {
-            emitEvent("upload_file_" + action.id);
-
-            const file = action.__file;
-            if (!file) {
-                throw new Error("No se recibió ningún archivo");
-            }
-
+            emitEvent(`upload_start:${action.id}`);
             const result = await submitAssignment(action.assignmentId, file);
             
-            const currentAssignments = stateManager.get("assignments") || [];
-            const updatedAssignments = currentAssignments.map(assignment => {
-                if (assignment.id === action.assignmentId) {
-                    return { ...assignment, submissionstatus: "submitted" };
-                }
-                return assignment;
-            });
-            
-            stateManager.set("assignments", updatedAssignments);
-            emitEvent("success:upload_file_" + action.id);
-            
-            return result;
+            // Actualizar estado de moodle de forma inmutable
+            const assignments = stateManager.get("assignments") || [];
+            stateManager.set("assignments", assignments.map(a => 
+                a.id === action.assignmentId ? { ...a, submissionstatus: "submitted" } : a
+            ));
 
+            emitEvent(`success:upload_file_${action.id}`);
+            return result;
         } catch (error) {
-            console.error("Error al subir archivo:", error);
-            emitEvent("error:upload_file_" + action.id);
+            emitEvent(`error:upload_file_${action.id}`);
+            throw error; // Re-lanzar para que el motor de UI sepa que falló
         }
     },
 
@@ -159,44 +166,41 @@ export const UIController = {
     // ---------------------------------------
     
     // Convierte un string a su tipo correcto (número, booleano, etc)
-    _parseValue(rawValue) {
-        if (rawValue === "true") return true;
-        if (rawValue === "false") return false;
-        
-        const asNumber = Number(rawValue);
-        if (!isNaN(asNumber) && rawValue !== "") {
-            return asNumber;
-        }
-        
-        return rawValue;
+    _parseValue(val) {
+        if (val === "true") return true;
+        if (val === "false") return false;
+        const n = Number(val);
+        return (!isNaN(n) && val !== "") ? n : val;
     },
 
     // Divide un argumento en partes (key, value, etc)
     _parseArgument(arg) {
         if (!arg) return [];
-        return arg.toString().split(/[:,]/).map(part => part.trim());
+        const str = arg.toString();
+        
+        // Buscamos el primer separador (sea coma o dos puntos)
+        const match = str.match(/[:|,]/);
+        if (!match) return [str.trim()];
+
+        const index = match.index;
+        return [
+            str.substring(0, index).trim(), // Llave
+            str.substring(index + 1).trim() // Todo lo demás (Valor)
+        ];
     },
 
     setStateVariable(arg) {
-        const parts = this._parseArgument(arg);
-        if (parts.length < 2) {
-            console.warn("setStateVariable requiere formato 'key:value'");
-            return;
-        }
+        const [key, rawVal] = this._parseArgument(arg);
+        if (!key || rawVal === undefined) return;
         
-        const key = parts[0];
-        const rawValue = parts.slice(1).join(":");
-        const value = this._parseValue(rawValue);
-        
-        console.log(`Estableciendo ${key} =`, value);
-        stateManager.set(key, value);
+        stateManager.set(key, this._parseValue(rawVal));
     },
 
     incrementState(arg) {
         const parts = this._parseArgument(arg);
         const key = parts[0];
         const incrementBy = parseInt(parts[1], 10) || 1;
-        
+        console.log(key, incrementBy)
         stateManager.set(key, `+${incrementBy}`);
     },
 
@@ -233,29 +237,23 @@ export const UIController = {
     // ---------------------------------------
 
     setCustomVariable(arg) {
-        const parts = this._parseArgument(arg);
-        if (parts.length < 2) {
-            console.warn("setCustomVariable requiere al menos 'key:value'");
-            return;
+        const [key, remainder] = this._parseArgument(arg);
+        if (!key || remainder === undefined) return;
+
+        let storageType = "local";
+        let rawValue = remainder;
+        const storagePrefix = remainder.match(/^(local|session)[:|,]/i);
+        
+        if (storagePrefix) {
+            storageType = storagePrefix[1].toLowerCase();
+            rawValue = remainder.substring(storagePrefix[0].length).trim();
         }
 
-        const key = parts[0];
-        let storageType = "local"; // por defecto
-        let rawValue;
-
-        // Formato: key:local:value o key:session:value
-        if (parts[1] === "local" || parts[1] === "session") {
-            storageType = parts[1];
-            rawValue = parts.slice(2).join(":");
-        } else {
-            // Formato: key:value
-            rawValue = parts.slice(1).join(":");
-        }
-
-        // Intentar parsear como JSON, sino usar valor directo
         let value;
         try {
-            value = JSON.parse(rawValue);
+            value = (rawValue.startsWith('{') || rawValue.startsWith('[')) 
+                    ? JSON.parse(rawValue) 
+                    : this._parseValue(rawValue);
         } catch {
             value = this._parseValue(rawValue);
         }
@@ -312,17 +310,15 @@ export const UIController = {
         this.setCustomVariable(`${key}:${storageType}:${newValue}`);
     },
 
+
     // ---------------------------------------
     // EVALUACIÓN DE CONDICIONES
     // ---------------------------------------
     
     evaluateCondition(expression) {
         if (!expression) return false;
-        
         try {
-            const coreState = stateManager.get() || {};
-            
-            // Variables personalizadas
+            const state = stateManager.get() || {};
             const customStore = stateManager.getCustom ? stateManager.getCustom() : {};
             const custom = {
                 ...customStore,
@@ -330,20 +326,16 @@ export const UIController = {
                     return stateManager.getCustom ? stateManager.getCustom(key) : undefined;
                 }
             };
+            // Creamos un inyector de contexto limpio
+            const context = { ...state, state, custom };
+            const keys = Object.keys(context);
+            const values = Object.values(context);
+            // Generamos la función: (keys) => expression
+            const evaluator = new Function(...keys, `return Boolean(${expression});`);
             
-            // Contexto completo para evaluar la expresión
-            const context = { 
-                ...coreState, 
-                state: coreState, 
-                custom 
-            };
-            
-            const evaluator = new Function("ctx", `with (ctx) { return ( ${expression} ); }`);
-            const result = evaluator(context);
-            
-            return Boolean(result);
-        } catch (error) {
-            console.warn(`Error al evaluar condición "${expression}":`, error);
+            return evaluator(...values);
+        } catch (e) {
+            console.warn(`Error evaluando: ${expression}`, e);
             return false;
         }
     },
@@ -354,43 +346,20 @@ export const UIController = {
     
     applyVisibilityRules(scene) {
         if (!scene) return;
-
-        // Obtener elementos del slide actual
-        const getCurrentElements = (scene) => {
-            if (Array.isArray(scene.slides)) {
-                const currentIndex = stateManager.get("slideIndex") || 0;
-                const currentSlide = scene.slides[currentIndex];
-                return currentSlide?.elements || [];
-            }
-            return scene.elements || [];
-        };
-
-        // Procesar un elemento y sus hijos recursivamente
-        const processElement = (element) => {
-            if (!element) return;
-
-            // Procesar visible_if
-            const visibilityCondition = element.visible_if || 
-                                       element.visibleIf || 
-                                       element.visibleIfCondition;
+        const currentIndex = stateManager.get("slideIndex") || 0;
+        const elements = scene.slides?.[currentIndex]?.elements || scene.elements || [];
+        const process = (el) => {
+            if (!el) return;
+            const cond = el.visible_if || el.visibleIf || el.visibleIfCondition;
             
-            if (visibilityCondition && element.id) {
-                const isVisible = this.evaluateCondition(visibilityCondition);
-                if (isVisible) {
-                    this.showElement(element.id);
-                } else {
-                    this.hideElement(element.id);
-                }
+            if (cond && el.id) {
+                const isVisible = this.evaluateCondition(cond);
+                this[isVisible ? 'showElement' : 'hideElement'](el.id);
             }
-
-            // Procesar elementos hijos
-            if (Array.isArray(element.elements)) {
-                element.elements.forEach(child => processElement(child));
-            }
+            if (Array.isArray(el.elements)) el.elements.forEach(process);
         };
 
-        const elements = getCurrentElements(scene);
-        elements.forEach(element => processElement(element));
+        elements.forEach(process);
     },
 
     // ---------------------------------------
@@ -400,148 +369,69 @@ export const UIController = {
     // Normaliza una acción a formato { type, arg }
     _normalizeAction(action) {
         if (typeof action === "string") {
-            const parts = action.split(":");
+            const [type, arg] = this._parseArgument(action);
+            return { type, arg, raw: action };
+        }
+        if (action?.type) {
             return {
-                type: parts[0],
-                arg: parts.slice(1).join(":"),
+                type: action.type.replace(/^:/, ""),
+                arg: action.arg ?? action.value,
                 raw: action
             };
         }
-        
-        if (typeof action === "object" && action.type) {
-            return {
-                type: action.type.toString().replace(/^:/, ""),
-                arg: action.arg !== undefined ? action.arg : action.value,
-                raw: action
-            };
-        }
-        
         return null;
     },
 
-    async execute(action, scene = null) {
-        if (!action) return;
+    // Dentro del objeto UIController...
+async execute(action, scene = null) {
+    if (!action) return;
+    const actions = Array.isArray(action) ? action : [action];
 
-        const actions = Array.isArray(action) ? action : [action];
+    for (const raw of actions) {
+        const normalized = this._normalizeAction(raw);
+        if (!normalized) continue;
 
-        for (const rawAction of actions) {
-            const normalized = this._normalizeAction(rawAction);
-            
-            if (!normalized) {
-                console.error("Acción inválida:", rawAction);
-                continue;
-            }
+        const { type, arg } = normalized;
 
-            const { type, arg } = normalized;
-
-            switch (type) {
-                // ELEMENTOS
-                case "show":
-                    this.showElement(arg);
-                    break;
-                    
-                case "hide":
-                    this.hideElement(arg);
-                    break;
-
-                // NAVEGACIÓN
-                case "previous_slide":
-                    this.previousSlide();
-                    break;
-                    
-                case "next_slide":
-                    this.nextSlide();
-                    break;
-                    
-                case "goto_scene":
-                    this.gotoScene(arg, scene);
-                    break;
-                    
-                case "goto_id":
-                    this.gotoId(arg, scene);
-                    break;
-
-                // MEDIA
-                case "play_video":
-                    this.playVideo(arg);
-                    break;
-                    
-                case "play_sound":
-                    this.playSound(arg, scene);
-                    break;
-                    
-                case "audio_finished":
-                    this.audioFinished();
-                    break;
-
-                // TEMPORIZADORES
-                case "wait":
-                    this.wait(arg);
-                    break;
-
-                // ARCHIVOS
-                case "upload_file":
-                    await this.uploadFile(normalized.raw);
-                    break;
-
-                // COMPLETADO
-                case "mark_complete":
-                    this.markComplete(arg);
-                    break;
-                    
-                case "end":
-                    emitEvent(`end:${arg}`);
-                    break;
-
-                // ESTADO
-                case "set":
-                    this.setStateVariable(arg);
-                    break;
-                    
-                case "inc":
-                    this.incrementState(arg);
-                    break;
-                    
-                case "dec":
-                    this.decrementState(arg);
-                    break;
-                    
-                case "call":
-                    this.callMethod(arg);
-                    break;
-
-                // ESTADO PERSONALIZADO
-                case "custom_set":
-                    this.setCustomVariable(arg);
-                    break;
-                    
-                case "custom_inc":
-                    this.incrementCustom(arg);
-                    break;
-                    
-                case "custom_dec":
-                    this.decrementCustom(arg);
-                    break;
-
-                // CONDICIONALES
-                case "if": {
-                    const condition = arg;
-                    const shouldExecute = this.evaluateCondition(condition);
-                    
-                    if (shouldExecute && normalized.raw.actions) {
-                        await this.execute(normalized.raw.actions, scene);
-                    }
-                    break;
+        const handlers = {
+            "show": () => this.showElement(arg),
+            "hide": () => this.hideElement(arg),
+            "previous_slide": () => this.previousSlide(),
+            "next_slide": () => this.nextSlide(),
+            "goto_scene": () => this.gotoScene(arg, scene),
+            "goto_id": () => this.gotoId(arg, scene),
+            "play_video": () => this.playVideo(arg),
+            "play_sound": () => this.playSound(arg, scene),
+            "play_sound_transition": () =>
+                this.playSound(arg, scene, { transitional: true }),
+            "audio_finished": () => this.audioFinished(),
+            "wait": () => this.wait(arg),
+            "upload_file": () => this.uploadFile(normalized.raw),
+            "mark_complete": () => {
+                stateManager.markAssignmentComplete(arg);
+                emitEvent(`success:${arg}`);
+            },
+            "end": () => { emitEvent(`end:${arg}`)},
+            "set": () => this.setStateVariable(arg),
+            "inc": () =>  this.incrementState(arg),
+            "dec": () =>  this.decrementState(arg),
+            "call": () => this.callMethod(arg),
+            "custom_set": () => this.setCustomVariable(arg),
+            "custom_inc": () => this.incrementCustom(arg),
+            "custom_dec": () => this.decrementCustom(arg),
+            "if": async () => {
+                if (this.evaluateCondition(arg) && normalized.raw.actions) {
+                    await this.execute(normalized.raw.actions, scene);
                 }
-
-                default:
-                    console.warn("Acción no reconocida:", type, normalized.raw);
             }
-        }
+        };
 
-        // Re-evaluar visibilidad después de ejecutar acciones
-        if (scene) {
-            this.applyVisibilityRules(scene);
+        if (handlers[type]) {
+            await handlers[type]();
         }
     }
+
+    // Sincronizar visibilidad después de cualquier cambio de estado
+    if (scene) this.applyVisibilityRules(scene);
+}
 };

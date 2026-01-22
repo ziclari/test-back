@@ -62,7 +62,7 @@ scene:
           top: 850
           right: 300
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           delay: 10
 
@@ -117,7 +117,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
     - id: "fase2-2"
@@ -155,7 +155,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
     - id: "fase2-3"
@@ -222,7 +222,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
 
@@ -264,7 +264,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
 
@@ -319,7 +319,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "next_slide"
           visible: false
     - id: "fase2-6"
@@ -342,7 +342,7 @@ scene:
           top: 930
           right: 120
           action:
-            - "play_sound:next"
+            - "play_sound_transition:next"
             - "goto_scene:menu"
   assets:
     images:

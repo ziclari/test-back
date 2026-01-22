@@ -38,7 +38,7 @@ scene:
             - heartbeat
           variant: primary
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - next_slide
     - id: intro_2
       background: background_1
@@ -103,7 +103,7 @@ scene:
             - slideUp
             - heartbeat
           action:
-            - play_sound:next
+            - play_sound_transition:next
             - goto_scene:menu
   assets:
     images:
