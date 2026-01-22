@@ -1,0 +1,57 @@
+version: 0.2
+env:
+  variables:
+    VITE_API_URL: "https://simuladores-qa.ebc.edu.mx/api/"
+    VITE_CONTENT_CDN: "https://simuladores-qa.ebc.edu.mx/"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22.14.0
+      docker: 20
+
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - echo "Successfully logged in to Amazon ECR"
+      - export GIT_COMMIT_HASH=$(echo $CODEBUILD_SOURCE_VERSION | rev | cut -c -7 | rev)
+      - IMAGE_TAG=latest
+      - echo "Commit hash: $GIT_COMMIT_HASH"
+
+  build:
+    commands:
+      - echo "===== Building Frontend ====="
+      - cd $CODEBUILD_SRC_DIR/frontend
+      - docker build \
+        --build-arg VITE_API_URL="$VITE_API_URL" \
+        --build-arg VITE_CONTENT_CDN="$VITE_CONTENT_CDN" \
+        -t frontend-build:latest \
+        -f Dockerfile .
+      - echo "===== Building Backend ====="
+      - cd $CODEBUILD_SRC_DIR/backend
+      - docker build -t backend-build:latest -f Dockerfile .
+
+  post_build:
+    commands:
+      - echo "===== Tagging Frontend Images ====="
+      - docker tag frontend-build:latest $FRONTEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker tag frontend-build:latest $FRONTEND_REPOSITORY_URI:$GIT_COMMIT_HASH
+      
+      - echo "===== Tagging Backend Images ====="
+      - docker tag backend-build:latest $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker tag backend-build:latest $BACKEND_REPOSITORY_URI:$GIT_COMMIT_HASH
+      
+      - echo "===== Pushing Frontend to ECR ====="
+      - docker push $FRONTEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $FRONTEND_REPOSITORY_URI:$GIT_COMMIT_HASH
+      
+      - echo "===== Pushing Backend to ECR ====="
+      - docker push $BACKEND_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $BACKEND_REPOSITORY_URI:$GIT_COMMIT_HASH
+      
+      - echo "Build completed successfully!"
+
+artifacts:
+  files:
+    - '**/*'

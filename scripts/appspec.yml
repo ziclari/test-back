@@ -1,0 +1,9 @@
+version: 0.0
+os: linux
+hooks:
+  BeforeInstall:
+    - location: ./stop_container.sh
+      runas: root
+  ApplicationStart:
+    - location: ./start_container.sh
+      runas: root
