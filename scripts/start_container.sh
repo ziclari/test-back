@@ -1,66 +1,57 @@
 #!/bin/bash
+set -e
 
-# Configuración AWS
 AWS_REGION=us-east-1
 AWS_ACCOUNT_ID=851725282348
 
-# URIs
-BACKEND_ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/simuladores-inn-backend:latest
-FRONTEND_ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/simuladores-inn-frontend:latest
-
-# Nombres de los contenedores
-BACKEND_CONTAINER="simuladores-inn-backend"
-FRONTEND_CONTAINER="simuladores-inn-frontend"
-
-# Nombre de la red Docker
+IMAGE_BASE="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/simuladores-innovacion-qa"
 NETWORK_NAME="general-ebc-network"
 
-# Login a ECR
-aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+BACKEND_APP="simuladores-inn-backend"
+BACKEND_IMAGE="$IMAGE_BASE:backend-latest"
 
-# Pull imágenes desde ECR
-docker pull $BACKEND_ECR_URI
-docker pull $FRONTEND_ECR_URI
+FRONTEND_APP="simuladores-inn-frontend"
+FRONTEND_IMAGE="$IMAGE_BASE:frontend-latest"
 
-# Iniciar contenedor de backend
+echo "Login to ECR"
+aws ecr get-login-password --region $AWS_REGION \
+| docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+echo "Ensure network exists"
+docker network inspect $NETWORK_NAME >/dev/null 2>&1 || \
+docker network create $NETWORK_NAME
+
+echo "Pull backend image"
+docker pull "$BACKEND_IMAGE"
+
+echo "Run backend"
 docker run -d \
-    --name $BACKEND_CONTAINER \
-    --network $NETWORK_NAME \
-    --restart unless-stopped \
-    -p 3000:3000 \
-    --memory "2048m" \
-    --cpus "1.0" \
-    --env-file .env_qa_backend \
-    $BACKEND_ECR_URI
+  --name "$BACKEND_APP" \
+  --network "$NETWORK_NAME" \
+  --restart unless-stopped \
+  -p 3000:3000 \
+  --memory 2048m \
+  --cpus 1.0 \
+  --env-file .env_qa_backend \
+  "$BACKEND_IMAGE"
 
-# Esperar a que el backend esté listo
 sleep 5
+docker inspect -f '{{.State.Running}}' "$BACKEND_APP" | grep true
 
-# Verificar que el backend esté corriendo
-if [ "$(docker ps -q -f name=$BACKEND_CONTAINER)" ]; then
-    echo "Backend is running"
-else
-    echo "Backend failed to start"
-    exit 1
-fi
+echo "Pull frontend image"
+docker pull "$FRONTEND_IMAGE"
 
-# Iniciar contenedor de frontend
+echo "Run frontend"
 docker run -d \
-    --name $FRONTEND_CONTAINER \
-    --network $NETWORK_NAME \
-    --restart unless-stopped \
-    -p 80:80 \
-    --memory "1024m" \
-    --cpus "0.5" \
-    $FRONTEND_ECR_URI
+  --name "$FRONTEND_APP" \
+  --network "$NETWORK_NAME" \
+  --restart unless-stopped \
+  -p 80:80 \
+  --memory 1024m \
+  --cpus 0.5 \
+  "$FRONTEND_IMAGE"
 
-# Esperar a que el frontend esté listo
 sleep 5
+docker inspect -f '{{.State.Running}}' "$FRONTEND_APP" | grep true
 
-# Verificar que el frontend esté corriendo
-if [ "$(docker ps -q -f name=$FRONTEND_CONTAINER)" ]; then
-    echo "Frontend is running"
-else
-    echo "Frontend failed to start"
-    exit 1
-fi
+echo "Application started successfully"

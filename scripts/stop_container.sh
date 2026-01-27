@@ -1,18 +1,45 @@
 #!/bin/bash
+AWS_REGION=us-east-1
+AWS_ACCOUNT_ID=851725282348
 
-BACKEND_CONTAINER="simuladores-inn-backend"
-FRONTEND_CONTAINER="simuladores-inn-frontend"
+IMAGE_BASE="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/simuladores-innovacion-qa"
 
-echo "===== Stopping and removing containers ====="
+BACKEND_APP="simuladores-inn-backend"
+BACKEND_TAG="backend-latest"
+BACKEND_IMAGE="$IMAGE_BASE:$BACKEND_TAG"
 
-for CONTAINER in $BACKEND_CONTAINER $FRONTEND_CONTAINER; do
-  if docker ps -aq -f name=^${CONTAINER}$ >/dev/null; then
-    echo "Stopping container: $CONTAINER"
-    docker stop "$CONTAINER" || true
-    docker rm -f "$CONTAINER" || true
-  else
-    echo "Container $CONTAINER not found, skipping..."
-  fi
-done
+FRONTEND_APP="simuladores-inn-frontend"
+FRONTEND_TAG="frontend-latest"
+FRONTEND_IMAGE="$IMAGE_BASE:$FRONTEND_TAG"
 
-echo "===== Stop completed ====="
+echo "Stopping backend if exists..."
+if docker ps -a --format '{{.Names}}' | grep -q "^${BACKEND_APP}$"; then
+  docker stop "$BACKEND_APP"
+  docker rm -f "$BACKEND_APP"
+else
+  echo "Backend container not found"
+fi
+
+echo "Removing backend image if exists..."
+if docker images "$BACKEND_IMAGE" -q | grep -q .; then
+  docker rmi -f "$BACKEND_IMAGE"
+else
+  echo "Backend image not present locally"
+fi
+
+echo "Stopping frontend if exists..."
+if docker ps -a --format '{{.Names}}' | grep -q "^${FRONTEND_APP}$"; then
+  docker stop "$FRONTEND_APP"
+  docker rm -f "$FRONTEND_APP"
+else
+  echo "Frontend container not found"
+fi
+
+echo "Removing frontend image if exists..."
+if docker images "$FRONTEND_IMAGE" -q | grep -q .; then
+  docker rmi -f "$FRONTEND_IMAGE"
+else
+  echo "Frontend image not present locally"
+fi
+
+echo "Stop phase completed"
