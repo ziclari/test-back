@@ -1,5 +1,5 @@
 # Build React
-FROM public.ecr.aws/docker/library/node:20 AS build
+FROM public.ecr.aws/docker/library/node:20-alpine AS build
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ ENV VITE_CONTENT_CDN=${VITE_CONTENT_CDN}
 RUN npm run build
 
 # Runner
-FROM node:20-alpine AS runner
+FROM public.ecr.aws/docker/library/node:20-alpine AS runner
 WORKDIR /app
 
 # Copias solo el build final
