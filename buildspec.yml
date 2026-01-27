@@ -13,28 +13,21 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region $AWS_REGION \
-        | docker login --username AWS --password-stdin \
-          $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - echo "Successfully logged in to Amazon ECR"
       - export GIT_COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-
+      
   build:
     commands:
       - echo "Building Frontend..."
       - cd $CODEBUILD_SRC_DIR/frontend
-      - docker build \
-          --build-arg VITE_API_URL="$VITE_API_URL" \
-          --build-arg VITE_CONTENT_CDN="$VITE_CONTENT_CDN" \
-          -t simuladores-frontend:build \
-          -f Dockerfile .
+      - docker build --build-arg VITE_API_URL="$VITE_API_URL" --build-arg VITE_CONTENT_CDN="$VITE_CONTENT_CDN" -t simuladores-frontend:build -f Dockerfile .
 
       - cd $CODEBUILD_SRC_DIR
 
       - echo "Building Backend..."
       - cd $CODEBUILD_SRC_DIR/backend
-      - docker build \
-          -t simuladores-backend:build \
-          -f Dockerfile .
+      - docker build -t simuladores-backend:build -f Dockerfile .
 
       - cd $CODEBUILD_SRC_DIR
 

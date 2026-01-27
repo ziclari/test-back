@@ -1,6 +1,4 @@
 #!/bin/bash
-set -e
-
 AWS_REGION=us-east-1
 AWS_ACCOUNT_ID=851725282348
 
@@ -14,12 +12,7 @@ FRONTEND_APP="simuladores-inn-frontend"
 FRONTEND_IMAGE="$IMAGE_BASE:frontend-latest"
 
 echo "Login to ECR"
-aws ecr get-login-password --region $AWS_REGION \
-| docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-
-echo "Ensure network exists"
-docker network inspect $NETWORK_NAME >/dev/null 2>&1 || \
-docker network create $NETWORK_NAME
+aws ecr get-login-password --region $AWS_REGION docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
 echo "Pull backend image"
 docker pull "$BACKEND_IMAGE"
@@ -36,7 +29,6 @@ docker run -d \
   "$BACKEND_IMAGE"
 
 sleep 5
-docker inspect -f '{{.State.Running}}' "$BACKEND_APP" | grep true
 
 echo "Pull frontend image"
 docker pull "$FRONTEND_IMAGE"
@@ -52,6 +44,5 @@ docker run -d \
   "$FRONTEND_IMAGE"
 
 sleep 5
-docker inspect -f '{{.State.Running}}' "$FRONTEND_APP" | grep true
 
 echo "Application started successfully"
