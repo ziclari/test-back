@@ -1,5 +1,5 @@
 # Build React
-FROM node:20 AS build
+FROM 851725282348.dkr.ecr.us-east-1.amazonaws.com/ebc-registry:node-20 AS build
 WORKDIR /app
 
 COPY package*.json ./
