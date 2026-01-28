@@ -9,6 +9,10 @@ import helmet from "helmet";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import fs from 'fs';
+import compression from "compression";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
+
+
 
 dotenv.config();
 
@@ -27,6 +31,24 @@ if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
 
 var router = express.Router();
 
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  keyGenerator: (req) => {
+    const ip = ipKeyGenerator(req);
+    const username = req.body?.username;
+    return username ? `${ip}:${username}` : ip;
+  },
+  message: "Demasiados intentos de login para este usuario",
+});
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
@@ -37,7 +59,7 @@ const upload = multer({
       cb(null, file.fieldname + '-' + uniqueSuffix);
     }
   }),
-  limits: { fileSize: 1024 * 1024 * 1024 }, // 1 GB ahora es seguro
+  limits: { fileSize: 1024 * 1024 * 1024 },
 });
 
 // Configuración de CORS para múltiples dominios
@@ -58,17 +80,23 @@ app.use(
     exposedHeaders: ["Authorization"],
   })
 );
-
+app.use(compression());
+app.use(generalLimiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
     crossOriginOpenerPolicy: false,
+    frameguard: { action: "deny" },
+    hsts: isProduction
+      ? { maxAge: 31536000, includeSubDomains: true }
+      : false,
   })
 );
 app.disable("x-powered-by");
 app.use(BASE_PATH, router);
+app.set("trust proxy", 1);
 
 // ========================================
 // UTILIDADES JWT
@@ -191,7 +219,7 @@ function authenticateToken(req, res, next) {
 /**
  * Login con Moodle
  */
-app.post("/auth/login", async (req, res) => {
+app.post("/auth/login", bodyParser.json(), loginLimiter, async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -247,7 +275,10 @@ app.post("/auth/login", async (req, res) => {
 /**
  * Refresh token - obtiene un nuevo access token
  */
-app.post("/auth/refresh", async (req, res) => {
+app.post("/auth/refresh",rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 50,
+  }), async (req, res) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
@@ -468,9 +499,11 @@ app.post(
       }
       
       res.json(response.data[0]);
-      fs.unlinkSync(req.file.path);
+      await fs.promises.unlink(req.file.path);
     } catch (err) {
-      if (req.file) fs.unlinkSync(req.file.path);
+      if (req.file) {
+        fs.promises.unlink(req.file.path).catch(() => {});
+      }
       console.error("Error al subir archivo:", err.message);
       res.status(500).json({
         error: "Error al subir archivo",
@@ -566,6 +599,15 @@ app.post("/submission-status", authenticateToken, async (req, res) => {
   }
 });
 
+async function pLimit(items, limit, fn) {
+  const results = [];
+  for (let i = 0; i < items.length; i += limit) {
+    const batch = items.slice(i, i + limit);
+    const batchResults = await Promise.all(batch.map(fn));
+    results.push(...batchResults);
+  }
+  return results;
+}
 /**
  * Obtener tareas enriquecidas con estado
  */
@@ -611,8 +653,10 @@ app.post("/assignments/enriched", authenticateToken, async (req, res) => {
       completionsubmit: a.completionsubmit,
     }));
 
-    const enriched = await Promise.all(
-      minimalAssignments.map(async (a) => {
+    const enriched = await pLimit(
+      minimalAssignments,
+      5,
+      async (a) => {
         try {
           const { data: status } = await axios.get(
             `${MOODLE_BASE}/webservice/rest/server.php`,
@@ -623,8 +667,10 @@ app.post("/assignments/enriched", authenticateToken, async (req, res) => {
                 moodlewsrestformat: "json",
                 assignid: a.id,
               },
+              timeout: Number(process.env.REQUEST_TIMEOUT || 30000),
             }
           );
+
           return {
             ...a,
             submissionstatus:
@@ -633,8 +679,9 @@ app.post("/assignments/enriched", authenticateToken, async (req, res) => {
         } catch {
           return a;
         }
-      })
+      }
     );
+
 
     res.json({ assignments: enriched });
   } catch (err) {
@@ -657,10 +704,9 @@ app.use((err, req, res, next) => {
 
 // INICIO DEL SERVIDOR
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =>
-  console.log(
-    `Servidor activo en puerto ${PORT} (${
-      isProduction ? "producción" : "local"
-    })`
-  )
-);
+app.listen(PORT, () => {
+  if (!isProduction) {
+    console.log(`Servidor activo en puerto ${PORT}`);
+  }
+});
+
