@@ -322,7 +322,7 @@ app.post(
   (req, res) => {
     const { user_id, context_id, prefix = "TAREA_APP" } = req.body;
     const { simulador } = req.params;
-    const redirectUrl = `${FRONTEND_URL}/simulador/${simulador}?user=${encodeURIComponent(
+    const redirectUrl = `${FRONTEND_URL}/${simulador}?user=${encodeURIComponent(
       user_id
     )}&course_id=${encodeURIComponent(context_id)}&prefix=${encodeURIComponent(
       prefix
