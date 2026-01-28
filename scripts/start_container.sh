@@ -13,6 +13,8 @@ FRONTEND_APP="simuladores-inn-frontend"
 FRONTEND_TAG="frontend-latest"
 FRONTEND_IMAGE="$IMAGE_BASE:$FRONTEND_TAG"
 
+ENV_FILE=/opt/app/.env_qa_inn_backend
+
 echo "Login to ECR"
 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
@@ -25,7 +27,7 @@ docker run -dit --restart unless-stopped \
   --network "$NETWORK_NAME" \
   --memory 2048m \
   --cpus 1.0 \
-  --env-file /opt/app/.env_qa_backend \
+  --env-file  "$ENV_FILE"\
   "$BACKEND_IMAGE"
 
 sleep 5
