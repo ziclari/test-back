@@ -421,14 +421,14 @@ scene:
       next:
         src: src/audios/audio2.mpga
   events:
-    - "on": success:upload_file_TAREA_APP_6
+    - "on": upload:success:TAREA_APP_6
       do:
         - show:mensaje_exito_6
         - show:boton_TAREA_APP_6
         - mark_complete:TAREA_APP_6
-    - "on": error:upload_file_TAREA_APP_6
+    - "on": upload:error:TAREA_APP_6
       do: show:mensaje_error_6
-    - "on": upload_file_TAREA_APP_6
+    - "on": upload:start:TAREA_APP_6
       do: hide:mensaje_error_6
     - "on": success:fase4_done
       do: goto_scene:menu

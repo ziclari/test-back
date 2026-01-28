@@ -568,32 +568,32 @@ scene:
       second:
         src: src/audios/audio2.mp3
   events:
-    - "on": success:upload_file_TAREA_APP_3
+    - "on": upload:success:TAREA_APP_3
       do:
         - show:mensaje_exito_3
         - show:boton_TAREA_APP_3
         - mark_complete:TAREA_APP_3
-    - "on": success:upload_file_TAREA_APP_4
+    - "on": upload:success:TAREA_APP_4
       do:
         - show:mensaje_exito_4
         - show:boton_TAREA_APP_4
         - mark_complete:TAREA_APP_4
-    - "on": success:upload_file_TAREA_APP_5
+    - "on": upload:success:TAREA_APP_5
       do:
         - show:mensaje_exito_5
         - show:boton_TAREA_APP_5
         - mark_complete:TAREA_APP_5
-    - "on": error:upload_file_TAREA_APP_3
+    - "on": upload:error:TAREA_APP_3
       do: show:mensaje_error_TAREA_APP_3
-    - "on": error:upload_file_TAREA_APP_4
+    - "on": upload:error:TAREA_APP_4
       do: show:mensaje_error_TAREA_APP_4
-    - "on": error:upload_file_TAREA_APP_5
+    - "on": upload:error:TAREA_APP_5
       do: show:mensaje_error_TAREA_APP_5
-    - "on": upload_file_TAREA_APP_3
+    - "on": upload:start:TAREA_APP_3
       do: hide:mensaje_error_TAREA_APP_3
-    - "on": upload_file_TAREA_APP_4
+    - "on": upload:start:TAREA_APP_4
       do: hide:mensaje_error_TAREA_APP_4
-    - "on": upload_file_TAREA_APP_5
+    - "on": upload:start:TAREA_APP_5
       do: hide:mensaje_error_TAREA_APP_5
     - "on": audio_finished
       do: show:fase_1_audio_siguiente

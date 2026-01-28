@@ -56,7 +56,7 @@ export const UIController = {
 
     gotoId(slideId, scene) {
         if (!scene?.slides) return console.warn("gotoId: Escena sin slides");
-        
+
         const index = scene.slides.findIndex(s => s.id === slideId);
         if (index === -1) return console.warn(`gotoId: Slide ${slideId} no encontrado`);
 
@@ -69,18 +69,18 @@ export const UIController = {
     },
 
     gotoScene(filename, scene = null) {
-        registry.purge(); 
+        registry.purge();
         const sceneFile = `${filename}.yaml`;
-        
+
         stateManager.set("currentSceneFile", sceneFile);
         stateManager.set("slideIndex", 0);
-        
+
         if (scene) {
             this.applyVisibilityRules(scene);
             if (scene.on_enter) this.execute(scene.on_enter, scene);
             if (scene.slides?.[0]?.on_enter) this.execute(scene.slides[0].on_enter, scene);
         }
-        
+
         emitEvent("scene:request", sceneFile);
     },
 
@@ -122,7 +122,7 @@ export const UIController = {
     wait(milliseconds) {
         const delay = parseInt(milliseconds, 10) || 1000;
         const timer = setTimeout(() => {
-            emitEvent(`wait_end:${delay}`);
+            emitEvent(`wait:end:${delay}`);
             registry.timers.delete(timer);
         }, delay);
         registry.timers.set(timer);
@@ -136,19 +136,19 @@ export const UIController = {
         if (!file) return console.error("No hay archivo para subir");
 
         try {
-            emitEvent(`upload_start:${action.id}`);
+            emitEvent(`upload:start:${action.id}`);
             const result = await submitAssignment(action.assignmentId, file);
-            
+
             // Actualizar estado de moodle de forma inmutable
             const assignments = stateManager.get("assignments") || [];
-            stateManager.set("assignments", assignments.map(a => 
+            stateManager.set("assignments", assignments.map(a =>
                 a.id === action.assignmentId ? { ...a, submissionstatus: "submitted" } : a
             ));
 
-            emitEvent(`success:upload_file_${action.id}`);
+            emitEvent(`upload:success:${action.id}`);
             return result;
         } catch (error) {
-            emitEvent(`error:upload_file_${action.id}`);
+            emitEvent(`upload:error:${action.id}`);
             throw error; // Re-lanzar para que el motor de UI sepa que falló
         }
     },
@@ -164,7 +164,7 @@ export const UIController = {
     // ---------------------------------------
     // VARIABLES DE ESTADO
     // ---------------------------------------
-    
+
     // Convierte un string a su tipo correcto (número, booleano, etc)
     _parseValue(val) {
         if (val === "true") return true;
@@ -177,7 +177,7 @@ export const UIController = {
     _parseArgument(arg) {
         if (!arg) return [];
         const str = arg.toString();
-        
+
         // Buscamos el primer separador (sea coma o dos puntos)
         const match = str.match(/[:|,]/);
         if (!match) return [str.trim()];
@@ -192,7 +192,7 @@ export const UIController = {
     setStateVariable(arg) {
         const [key, rawVal] = this._parseArgument(arg);
         if (!key || rawVal === undefined) return;
-        
+
         stateManager.set(key, this._parseValue(rawVal));
     },
 
@@ -208,7 +208,7 @@ export const UIController = {
         const parts = this._parseArgument(arg);
         const key = parts[0];
         const decrementBy = parseInt(parts[1], 10) || 1;
-        
+
         stateManager.set(key, `+${-decrementBy}`);
     },
 
@@ -243,7 +243,7 @@ export const UIController = {
         let storageType = "local";
         let rawValue = remainder;
         const storagePrefix = remainder.match(/^(local|session)[:|,]/i);
-        
+
         if (storagePrefix) {
             storageType = storagePrefix[1].toLowerCase();
             rawValue = remainder.substring(storagePrefix[0].length).trim();
@@ -251,9 +251,9 @@ export const UIController = {
 
         let value;
         try {
-            value = (rawValue.startsWith('{') || rawValue.startsWith('[')) 
-                    ? JSON.parse(rawValue) 
-                    : this._parseValue(rawValue);
+            value = (rawValue.startsWith('{') || rawValue.startsWith('['))
+                ? JSON.parse(rawValue)
+                : this._parseValue(rawValue);
         } catch {
             value = this._parseValue(rawValue);
         }
@@ -277,12 +277,12 @@ export const UIController = {
         }
 
         const currentValue = stateManager.getCustom(key, storageType);
-        const currentNumber = typeof currentValue === "number" 
-            ? currentValue 
+        const currentNumber = typeof currentValue === "number"
+            ? currentValue
             : Number(currentValue) || 0;
 
         const newValue = currentNumber + incrementBy;
-        
+
         this.setCustomVariable(`${key}:${storageType}:${newValue}`);
     },
 
@@ -306,7 +306,7 @@ export const UIController = {
             : Number(currentValue) || 0;
 
         const newValue = currentNumber - decrementBy;
-        
+
         this.setCustomVariable(`${key}:${storageType}:${newValue}`);
     },
 
@@ -314,7 +314,7 @@ export const UIController = {
     // ---------------------------------------
     // EVALUACIÓN DE CONDICIONES
     // ---------------------------------------
-    
+
     evaluateCondition(expression) {
         if (!expression) return false;
         try {
@@ -332,7 +332,7 @@ export const UIController = {
             const values = Object.values(context);
             // Generamos la función: (keys) => expression
             const evaluator = new Function(...keys, `return Boolean(${expression});`);
-            
+
             return evaluator(...values);
         } catch (e) {
             console.warn(`Error evaluando: ${expression}`, e);
@@ -343,7 +343,7 @@ export const UIController = {
     // ---------------------------------------
     // REGLAS DE VISIBILIDAD
     // ---------------------------------------
-    
+
     applyVisibilityRules(scene) {
         if (!scene) return;
         const currentIndex = stateManager.get("slideIndex") || 0;
@@ -351,7 +351,7 @@ export const UIController = {
         const process = (el) => {
             if (!el) return;
             const cond = el.visible_if || el.visibleIf || el.visibleIfCondition;
-            
+
             if (cond && el.id) {
                 const isVisible = this.evaluateCondition(cond);
                 this[isVisible ? 'showElement' : 'hideElement'](el.id);
@@ -365,7 +365,7 @@ export const UIController = {
     // ---------------------------------------
     // EJECUTOR DE ACCIONES
     // ---------------------------------------
-    
+
     // Normaliza una acción a formato { type, arg }
     _normalizeAction(action) {
         if (typeof action === "string") {
@@ -383,55 +383,55 @@ export const UIController = {
     },
 
     // Dentro del objeto UIController...
-async execute(action, scene = null) {
-    if (!action) return;
-    const actions = Array.isArray(action) ? action : [action];
+    async execute(action, scene = null) {
+        if (!action) return;
+        const actions = Array.isArray(action) ? action : [action];
 
-    for (const raw of actions) {
-        const normalized = this._normalizeAction(raw);
-        if (!normalized) continue;
+        for (const raw of actions) {
+            const normalized = this._normalizeAction(raw);
+            if (!normalized) continue;
 
-        const { type, arg } = normalized;
+            const { type, arg } = normalized;
 
-        const handlers = {
-            "show": () => this.showElement(arg),
-            "hide": () => this.hideElement(arg),
-            "previous_slide": () => this.previousSlide(),
-            "next_slide": () => this.nextSlide(),
-            "goto_scene": () => this.gotoScene(arg, scene),
-            "goto_id": () => this.gotoId(arg, scene),
-            "play_video": () => this.playVideo(arg),
-            "play_sound": () => this.playSound(arg, scene),
-            "play_sound_transition": () =>
-                this.playSound(arg, scene, { transitional: true }),
-            "audio_finished": () => this.audioFinished(),
-            "wait": () => this.wait(arg),
-            "upload_file": () => this.uploadFile(normalized.raw),
-            "mark_complete": () => {
-                stateManager.markAssignmentComplete(arg);
-                emitEvent(`success:${arg}`);
-            },
-            "end": () => { emitEvent(`end:${arg}`)},
-            "set": () => this.setStateVariable(arg),
-            "inc": () =>  this.incrementState(arg),
-            "dec": () =>  this.decrementState(arg),
-            "call": () => this.callMethod(arg),
-            "custom_set": () => this.setCustomVariable(arg),
-            "custom_inc": () => this.incrementCustom(arg),
-            "custom_dec": () => this.decrementCustom(arg),
-            "if": async () => {
-                if (this.evaluateCondition(arg) && normalized.raw.actions) {
-                    await this.execute(normalized.raw.actions, scene);
+            const handlers = {
+                "show": () => this.showElement(arg),
+                "hide": () => this.hideElement(arg),
+                "previous_slide": () => this.previousSlide(),
+                "next_slide": () => this.nextSlide(),
+                "goto_scene": () => this.gotoScene(arg, scene),
+                "goto_id": () => this.gotoId(arg, scene),
+                "play_video": () => this.playVideo(arg),
+                "play_sound": () => this.playSound(arg, scene),
+                "play_sound_transition": () =>
+                    this.playSound(arg, scene, { transitional: true }),
+                "audio_finished": () => this.audioFinished(),
+                "wait": () => this.wait(arg),
+                "upload_file": () => this.uploadFile(normalized.raw),
+                "mark_complete": () => {
+                    stateManager.markAssignmentComplete(arg);
+                    emitEvent(`success:${arg}`);
+                },
+                "end": () => { emitEvent(`end:${arg}`) },
+                "set": () => this.setStateVariable(arg),
+                "inc": () => this.incrementState(arg),
+                "dec": () => this.decrementState(arg),
+                "call": () => this.callMethod(arg),
+                "custom_set": () => this.setCustomVariable(arg),
+                "custom_inc": () => this.incrementCustom(arg),
+                "custom_dec": () => this.decrementCustom(arg),
+                "if": async () => {
+                    if (this.evaluateCondition(arg) && normalized.raw.actions) {
+                        await this.execute(normalized.raw.actions, scene);
+                    }
                 }
+            };
+
+            if (handlers[type]) {
+                await handlers[type]();
             }
-        };
-
-        if (handlers[type]) {
-            await handlers[type]();
         }
-    }
 
-    // Sincronizar visibilidad después de cualquier cambio de estado
-    if (scene) this.applyVisibilityRules(scene);
-}
+        // Sincronizar visibilidad después de cualquier cambio de estado
+        if (scene) this.applyVisibilityRules(scene);
+    }
 };

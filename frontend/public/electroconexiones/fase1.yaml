@@ -837,23 +837,23 @@ scene:
       first:
         src: src/audios/audio1.mp3
   events:
-    - "on": success:upload_file_TAREA_APP_1
+    - "on": upload:success:TAREA_APP_1
       do:
         - show:mensaje_exito_1
         - show:boton_TAREA_APP_1
         - mark_complete:TAREA_APP_1
-    - "on": success:upload_file_TAREA_APP_2
+    - "on": upload:success:TAREA_APP_2
       do:
         - show:mensaje_exito_2
         - show:boton_TAREA_APP_2
         - mark_complete:TAREA_APP_2
-    - "on": error:upload_file_TAREA_APP_1
+    - "on": upload:error:TAREA_APP_1
       do: show:mensaje_error_1
-    - "on": error:upload_file_TAREA_APP_2
+    - "on": upload:error:TAREA_APP_2
       do: show:mensaje_error_2
-    - "on": upload_file_TAREA_APP_1
+    - "on": upload:start:TAREA_APP_1
       do: hide:mensaje_error_1
-    - "on": upload_file_TAREA_APP_1
+    - "on": upload:start:TAREA_APP_1
       do: hide:mensaje_error_1
     - "on": audio_finished
       do: show:audio_siguiente

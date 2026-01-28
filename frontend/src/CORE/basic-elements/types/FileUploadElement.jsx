@@ -50,7 +50,7 @@ export default function FileUploadElement({
 
     if (assignment.submissionstatus === "submitted") {
       setIsDisabled(true);
-      emitEvent("success:upload_file_" + id);
+      emitEvent("upload:success:" + id);
       return true;
     }
 
@@ -62,17 +62,17 @@ export default function FileUploadElement({
     // Valida estado inicial
     syncFromStateManager();
 
-    const unsubSuccess = onEvent(`success:upload_file_${id}`, () => {
+    const unsubSuccess = onEvent(`upload:success:${id}`, () => {
       setIsDisabled(true);
       setIsLoading(false);
     });
 
-    const unsubStart = onEvent(`upload_start:${id}`, () => {
+    const unsubStart = onEvent(`upload:start:${id}`, () => {
       setIsLoading(true);
       setIsDisabled(false);
     });
 
-    const unsubError = onEvent(`error:upload_file_${id}`, () => {
+    const unsubError = onEvent(`upload:error:${id}`, () => {
       setIsLoading(false);
     });
 
