@@ -59,7 +59,7 @@ const upload = multer({
       cb(null, file.fieldname + '-' + uniqueSuffix);
     }
   }),
-  limits: { fileSize: 1024 * 1024 * 1024 },
+  limits: { fileSize: 20 * 1024 * 1024 },
 });
 
 // Configuración de CORS para múltiples dominios

@@ -67,7 +67,7 @@ export default function FileUploadElement({
       setIsLoading(false);
     });
 
-    const unsubStart = onEvent(`upload_file_${id}`, () => {
+    const unsubStart = onEvent(`upload_start:${id}`, () => {
       setIsLoading(true);
       setIsDisabled(false);
     });
@@ -117,9 +117,8 @@ export default function FileUploadElement({
   // --------------------------
   return (
     <div
-      className={`relative ${
-        className || "border-2 border-dashed border-gray-400"
-      } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} bg-contain bg-center bg-no-repeat`}
+      className={`relative ${className || "border-2 border-dashed border-gray-400"
+        } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""} bg-contain bg-center bg-no-repeat`}
       style={{
         backgroundImage: background ? `url(${getPath(background)})` : "",
       }}
@@ -133,9 +132,8 @@ export default function FileUploadElement({
       )}
 
       <label
-        className={`cursor-pointer flex flex-col items-center space-y-2 ${
-          isDisabled ? "pointer-events-none" : ""
-        }`}
+        className={`cursor-pointer flex flex-col items-center space-y-2 ${isDisabled ? "pointer-events-none" : ""
+          }`}
       >
         {icon ? (
           <img src={getPath(icon)} alt="" width={80} height={80} />
@@ -143,7 +141,7 @@ export default function FileUploadElement({
           <br />
         )}
 
-        <span className={icon ? "p-4" : "mt-16 p-4"}>{text}</span>
+        <span className={icon ? "p-4" : "mt-16 p-4"}>{text} <br /> (No mayor a 20 MB)</span>
 
         <input
           type="file"
