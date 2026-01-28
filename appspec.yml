@@ -4,6 +4,8 @@ hooks:
   BeforeInstall:
     - location: ./scripts/stop_container.sh
       runas: root
+    - location: ./scripts/copy_env.sh
+      runas: root
   ApplicationStart:
     - location: ./scripts/start_container.sh
       runas: root

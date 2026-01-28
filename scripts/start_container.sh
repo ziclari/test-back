@@ -23,10 +23,9 @@ echo "Run backend"
 docker run -dit --restart unless-stopped \
   --name "$BACKEND_APP" \
   --network "$NETWORK_NAME" \
-  -p 3000:3000 \
   --memory 2048m \
   --cpus 1.0 \
-  --env-file .env_qa_backend \
+  --env-file /opt/app/.env_qa_backend \
   "$BACKEND_IMAGE"
 
 sleep 5
@@ -38,7 +37,6 @@ echo "Run frontend"
 docker run -dit --restart unless-stopped \
   --name "$FRONTEND_APP" \
   --network "$NETWORK_NAME" \
-  -p 80:80 \
   --memory 1024m \
   --cpus 0.5 \
   "$FRONTEND_IMAGE"
