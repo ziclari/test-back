@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     VITE_API_URL: "https://simuladores-qa.ebc.edu.mx/api/"
-    VITE_CONTENT_CDN: "https://muymuymuymuymuymuymuy929292992.s3.amazonaws.com/"
+    VITE_CONTENT_CDN: "https://simuladores-qa.ebc.edu.mx/"
 
 phases:
   install:
