@@ -2,10 +2,10 @@ version: 0.0
 os: linux
 hooks:
   BeforeInstall:
-    - location: ./scripts/stop_container.sh
+    - location: ./scripts/QA/stop_container.sh
       runas: root
-    - location: ./scripts/copy_env.sh
+    - location: ./scripts/QA/copy_env.sh
       runas: root
   ApplicationStart:
-    - location: ./scripts/start_container.sh
+    - location: ./scripts/QA/start_container.sh
       runas: root
