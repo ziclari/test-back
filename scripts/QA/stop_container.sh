@@ -5,11 +5,11 @@ AWS_ACCOUNT_ID=851725282348
 IMAGE_BASE="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/simuladores-innovacion-qa"
 
 
-BACKEND_APP="simuladores-inn-backend"
+BACKEND_APP="simuladores-inn-backend-qa"
 BACKEND_TAG="backend-latest"
 BACKEND_IMAGE="$IMAGE_BASE:$BACKEND_TAG"
 
-FRONTEND_APP="simuladores-inn-frontend"
+FRONTEND_APP="simuladores-inn-frontend-qa"
 FRONTEND_TAG="frontend-latest"
 FRONTEND_IMAGE="$IMAGE_BASE:$FRONTEND_TAG"
 
