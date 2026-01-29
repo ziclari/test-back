@@ -101,6 +101,7 @@ export default function FileUploadElement({
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    event.target.value = ""; // Reset input to allow re-selection of the same file
     handleUpload(file);
   };
 

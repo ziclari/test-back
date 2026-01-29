@@ -584,17 +584,17 @@ scene:
         - show:boton_TAREA_APP_5
         - mark_complete:TAREA_APP_5
     - "on": error:upload_file_TAREA_APP_3
-      do: show:mensaje_error_TAREA_APP_3
+      do: show:mensaje_error_3
     - "on": error:upload_file_TAREA_APP_4
-      do: show:mensaje_error_TAREA_APP_4
+      do: show:mensaje_error_4
     - "on": error:upload_file_TAREA_APP_5
-      do: show:mensaje_error_TAREA_APP_5
+      do: show:mensaje_error_5
     - "on": upload_file_TAREA_APP_3
-      do: hide:mensaje_error_TAREA_APP_3
+      do: hide:mensaje_error_3
     - "on": upload_file_TAREA_APP_4
-      do: hide:mensaje_error_TAREA_APP_4
+      do: hide:mensaje_error_4
     - "on": upload_file_TAREA_APP_5
-      do: hide:mensaje_error_TAREA_APP_5
+      do: hide:mensaje_error_5
     - "on": audio_finished
       do: show:fase_1_audio_siguiente
     - "on": end:fase1_1_video

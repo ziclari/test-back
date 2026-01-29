@@ -149,7 +149,9 @@ export const UIController = {
             return result;
         } catch (error) {
             emitEvent(`upload:error:${action.id}`);
-            throw error; // Re-lanzar para que el motor de UI sepa que falló
+            console.error("Upload error handled by event:", error);
+            // Non-blocking error handling: we rely on the event system to notify the UI
+            // throw error;
         }
     },
 
