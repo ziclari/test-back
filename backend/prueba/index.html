@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Obtener token Moodle</title>
+</head>
+<body>
+
+  <h3>Obtener token Moodle (CAS)</h3>
+
+  <button id="btn">Abrir Moodle Mobile Launch</button>
+
+  <p>
+    1️⃣ Se abrirá una nueva pestaña<br>
+    2️⃣ Abre DevTools (F12)<br>
+    3️⃣ Ve a Network → launch.php<br>
+    4️⃣ Copia el token desde <b>Location</b>
+  </p>
+
+  <script>
+    document.getElementById('btn').onclick = () => {
+      const passport = Date.now();
+      const url =
+        'https://moodleqa.ebc.edu.mx/admin/tool/mobile/launch.php' +
+        '?service=moodle_mobile_app' +
+        '&passport=' + passport +
+        '&urlscheme=moodlemobile';
+
+      window.open(url, '_blank');
+    };
+  </script>
+
+</body>
+</html>

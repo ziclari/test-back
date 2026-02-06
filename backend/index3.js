@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import FormData from "form-data";
 import multer from "multer";
 import helmet from "helmet";
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import fs from 'fs';
 import compression from "compression";
 import rateLimit, { ipKeyGenerator } from "express-rate-limit";
@@ -21,7 +23,6 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 const BASE_PATH = process.env.BASE_PATH || "/";
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-const MOODLE_TOKEN = process.env.MOODLE_TOKEN;
 
 // Validación de secretos al inicio
 if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
@@ -74,7 +75,9 @@ app.use(
       } else {
         callback(new Error("No permitido por CORS"));
       }
-    }
+    },
+    credentials: true,
+    exposedHeaders: ["Authorization"],
   })
 );
 app.use(compression());
@@ -94,6 +97,248 @@ app.use(
 app.disable("x-powered-by");
 app.use(BASE_PATH, router);
 app.set("trust proxy", 1);
+
+// ========================================
+// UTILIDADES JWT
+// ========================================
+
+/**
+ * Genera un access token (corta duración)
+ */
+function generateAccessToken(payload) {
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: "15m", // 15 minutos
+    issuer: "moodle-api",
+    audience: "moodle-clients",
+  });
+}
+
+/**
+ * Genera un refresh token (larga duración)
+ */
+function generateRefreshToken(payload) {
+  return jwt.sign(payload, JWT_REFRESH_SECRET, {
+    expiresIn: "1d",
+    issuer: "moodle-api",
+    audience: "moodle-clients",
+  });
+}
+
+/**
+ * Encripta el token de Moodle para almacenarlo en JWT
+ */
+function encryptMoodleToken(token) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv(
+    "aes-256-gcm",
+    Buffer.from(JWT_SECRET.padEnd(32, "0").slice(0, 32)),
+    iv
+  );
+
+  let encrypted = cipher.update(token, "utf8", "hex");
+  encrypted += cipher.final("hex");
+
+  const authTag = cipher.getAuthTag().toString("hex");
+  return `${iv.toString("hex")}:${authTag}:${encrypted}`;
+}
+
+/**
+ * Desencripta el token de Moodle desde JWT
+ */
+function decryptMoodleToken(encryptedToken) {
+  if (!encryptedToken) return null;
+
+  try {
+    const [ivHex, authTagHex, encrypted] = encryptedToken.split(":");
+    const iv = Buffer.from(ivHex, "hex");
+    const authTag = Buffer.from(authTagHex, "hex");
+    const decipher = crypto.createDecipheriv(
+      "aes-256-gcm",
+      Buffer.from(JWT_SECRET.padEnd(32, "0").slice(0, 32)),
+      iv
+    );
+    decipher.setAuthTag(authTag);
+
+    const decrypted =
+      decipher.update(encrypted, "hex", "utf8") + decipher.final("utf8");
+    return decrypted;
+  } catch (err) {
+    return null;
+  }
+}
+
+// ========================================
+// MIDDLEWARE DE AUTENTICACIÓN
+// ========================================
+
+/**
+ * Middleware para verificar el JWT access token
+ */
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({
+      error: "Token no proporcionado",
+      code: "NO_TOKEN",
+    });
+  }
+
+  jwt.verify(
+    token,
+    JWT_SECRET,
+    {
+      issuer: "moodle-api",
+      audience: "moodle-clients",
+    },
+    (err, payload) => {
+      if (err) {
+        if (err.name === "TokenExpiredError") {
+          return res.status(401).json({
+            error: "Token expirado",
+            code: "TOKEN_EXPIRED",
+          });
+        }
+        return res.status(403).json({
+          error: "Token inválido",
+          code: "INVALID_TOKEN",
+        });
+      }
+
+      req.user = payload;
+      next();
+    }
+  );
+}
+
+// ========================================
+// ENDPOINTS DE AUTENTICACIÓN
+// ========================================
+
+/**
+ * Login con Moodle
+ */
+app.post("/auth/login", bodyParser.json(), loginLimiter, async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: "Usuario y contraseña son requeridos" });
+  }
+
+  try {
+    const { data } = await axios.get(`${MOODLE_BASE}/login/token.php`, {
+      params: { username, password, service: "moodle_mobile_app" },
+    });
+
+    if (data.error) {
+      return res.status(401).json({ error: data.error });
+    }
+
+    if (!data.token) {
+      return res.status(400).json({ error: "No se recibió token de Moodle" });
+    }
+
+    // Encriptar token de Moodle
+    const encryptedMoodleToken = encryptMoodleToken(data.token);
+
+    // Payload del JWT
+    const payload = {
+      username: username,
+      moodleToken: encryptedMoodleToken,
+      tokenType: "access",
+    };
+
+    // Generar tokens
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken({
+      username: username,
+      moodleToken: encryptedMoodleToken,
+      tokenType: "refresh",
+    });
+
+    res.json({
+      ok: true,
+      accessToken,
+      refreshToken,
+      expiresIn: 900, // 15 minutos en segundos
+      tokenType: "Bearer",
+    });
+  } catch (err) {
+    console.error("Error en login:", err.message);
+    res.status(500).json({ error: "Error al autenticar con Moodle" });
+  }
+});
+
+/**
+ * Refresh token - obtiene un nuevo access token
+ */
+app.post("/auth/refresh",rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 50,
+  }), async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({
+      error: "Refresh token no proporcionado",
+      code: "NO_REFRESH_TOKEN",
+    });
+  }
+
+  try {
+    const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET, {
+      issuer: "moodle-api",
+      audience: "moodle-clients",
+    });
+
+    if (payload.tokenType !== "refresh") {
+      return res.status(403).json({ error: "Token inválido" });
+    }
+
+    // Generar nuevo access token
+    const newAccessToken = generateAccessToken({
+      username: payload.username,
+      moodleToken: payload.moodleToken,
+      tokenType: "access",
+    });
+
+    res.json({
+      ok: true,
+      accessToken: newAccessToken,
+      expiresIn: 900,
+      tokenType: "Bearer",
+    });
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({
+        error: "Refresh token expirado. Por favor, inicia sesión nuevamente",
+        code: "REFRESH_TOKEN_EXPIRED",
+      });
+    }
+    return res.status(403).json({ error: "Refresh token inválido" });
+  }
+});
+
+/**
+ * Verificar si el usuario está autenticado
+ */
+app.get("/auth/check", authenticateToken, (req, res) => {
+  res.json({
+    ok: true,
+    username: req.user.username,
+  });
+});
+
+/**
+ * Logout (opcional - el cliente simplemente elimina los tokens)
+ */
+app.post("/auth/logout", authenticateToken, (req, res) => {
+  // En una implementación completa, aquí podrías agregar el token a una blacklist
+  res.json({ ok: true, message: "Sesión cerrada exitosamente" });
+});
 
 // ========================================
 // ENDPOINTS DE MOODLE (protegidos)
@@ -120,8 +365,8 @@ app.post(
 /**
  * Obtener tareas del curso
  */
-app.post("/assignments", async (req, res) => {
-  const moodleToken = MOODLE_TOKEN;
+app.post("/assignments", authenticateToken, async (req, res) => {
+  const moodleToken = decryptMoodleToken(req.user.moodleToken);
 
   if (!moodleToken) {
     return res.status(401).json({ error: "No autorizado" });
@@ -172,8 +417,8 @@ app.post("/assignments", async (req, res) => {
 /**
  * Obtener draft item ID
  */
-app.get("/get-draft-itemid", async (req, res) => {
-  const moodleToken = MOODLE_TOKEN;
+app.get("/get-draft-itemid", authenticateToken, async (req, res) => {
+  const moodleToken = decryptMoodleToken(req.user.moodleToken);
 
   if (!moodleToken) {
     return res.status(401).json({ error: "No autorizado" });
@@ -208,9 +453,10 @@ app.get("/get-draft-itemid", async (req, res) => {
  */
 app.post(
   "/upload-draft-file",
+  authenticateToken,
   upload.single("file"),
   async (req, res) => {
-    const moodleToken = MOODLE_TOKEN;
+    const moodleToken = decryptMoodleToken(req.user.moodleToken);
 
     if (!moodleToken) {
       return res.status(401).json({ error: "No autorizado" });
@@ -270,8 +516,8 @@ app.post(
 /**
  * Enviar submission
  */
-app.post("/submit", async (req, res) => {
-  const moodleToken = MOODLE_TOKEN;
+app.post("/submit", authenticateToken, async (req, res) => {
+  const moodleToken = decryptMoodleToken(req.user.moodleToken);
 
   if (!moodleToken) {
     return res.status(401).json({ error: "No autorizado" });
@@ -308,7 +554,7 @@ app.post("/submit", async (req, res) => {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       }
     );
-    console.log(data)
+
     res.json(data);
   } catch (err) {
     //console.error("Error al guardar entrega:", err.message);
@@ -319,8 +565,8 @@ app.post("/submit", async (req, res) => {
 /**
  * Consultar estado de entrega
  */
-app.post("/submission-status", async (req, res) => {
-  const moodleToken = MOODLE_TOKEN;
+app.post("/submission-status", authenticateToken, async (req, res) => {
+  const moodleToken = decryptMoodleToken(req.user.moodleToken);
 
   if (!moodleToken) {
     return res.status(401).json({ error: "No autorizado" });
@@ -365,8 +611,8 @@ async function pLimit(items, limit, fn) {
 /**
  * Obtener tareas enriquecidas con estado
  */
-app.post("/assignments/enriched", async (req, res) => {
-  const moodleToken = MOODLE_TOKEN;
+app.post("/assignments/enriched", authenticateToken, async (req, res) => {
+  const moodleToken = decryptMoodleToken(req.user.moodleToken);
 
   if (!moodleToken) {
     return res.status(401).json({ error: "No autorizado" });
